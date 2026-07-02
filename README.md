@@ -81,6 +81,8 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 `plugins/comfyui-codex/.codex-plugin/plugin.json` is the plugin manifest. It declares:
 
 - Plugin metadata and version.
+- Author: `vavo` with profile URL `https://github.com/vavo`.
+- Homepage/repository: `https://github.com/vavo/comfyui-codex`.
 - The `./skills/` folder.
 - User-facing Codex app metadata.
 - Default prompts:
@@ -91,7 +93,7 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 Current version:
 
 ```text
-0.1.0+codex.20260702141800
+0.1.0+codex.20260702144228
 ```
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
