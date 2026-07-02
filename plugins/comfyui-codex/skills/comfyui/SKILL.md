@@ -1,6 +1,6 @@
 ---
 name: comfyui
-description: Build, run, inspect, and troubleshoot ComfyUI workflows and integrations. Use when Codex needs to help with ComfyUI Server API or Comfy Cloud API calls, API-format workflow JSON, node graph creation or modification, missing models or custom nodes, VRAM/startup/runtime failures, ComfyUI Manager/custom node dependency issues, or quick beginner how-to guidance for ComfyUI.
+description: Build, run, inspect, and troubleshoot ComfyUI workflows and integrations using official docs plus proven agent workflow patterns. Use when Codex needs to help with ComfyUI Server API or Comfy Cloud API calls, API-format workflow JSON, editor workflow conversion, node graph creation or modification, workflow-as-skill packaging, missing models or custom nodes, VRAM/startup/runtime failures, ComfyUI Manager/custom node dependency issues, or quick beginner how-to guidance for ComfyUI.
 ---
 
 # ComfyUI
@@ -19,6 +19,7 @@ Read only what the task needs:
 - `references/workflow-authoring.md`: creating, converting, validating, and patching API-format workflow JSON.
 - `references/troubleshooting.md`: startup failures, missing models, missing nodes, custom node conflicts, dependency problems, VRAM/performance issues.
 - `references/new-user-guide.md`: concise explanations and first-run guidance for users new to ComfyUI.
+- `references/agent-workflow-patterns.md`: repo-derived patterns from ComfyUI-Agent-Kit and ComfyUI_Skills_OpenClaw: local-first bootstrap, template-first graph building, schema aliases, dependency preflight, multi-server routing, and GUI/API format separation.
 
 Use `scripts/comfy_probe.py` when a local ComfyUI server is reachable or the user provides an API-format workflow file. The script is read-only unless ComfyUI itself logs routine GET requests.
 
@@ -26,16 +27,20 @@ Use `scripts/comfy_probe.py` when a local ComfyUI server is reachable or the use
 
 1. Identify target runtime: local ComfyUI server, Comfy Desktop, portable Windows build, cloud notebook, Runpod/Jupyter, or Comfy Cloud.
 2. Establish the API surface: local defaults to `http://127.0.0.1:8188`; Cloud uses `https://cloud.comfy.org` with `X-API-Key`.
-3. Inspect before editing: call safe GET endpoints, read workflow JSON structurally, and compare workflow `class_type` values with `/object_info` when available.
-4. For workflow changes, modify the smallest set of node inputs. Do not invent custom node class names; fetch node definitions or ask for the workflow/custom node source.
-5. For troubleshooting, isolate first: core ComfyUI vs model path vs custom node vs dependency vs GPU/VRAM. Custom nodes are common culprits, so test with them disabled before blaming core.
-6. Verify the outcome with a real API call, workflow load, or deterministic local script when possible. If the user's runtime is unavailable, say exactly what remains unverified.
+3. Bootstrap facts: collect `/system_stats`, `/object_info`, `/models`, configured workflow folders, available models, and whether the user expects local-first or Cloud behavior.
+4. Inspect before editing: detect API vs editor workflow JSON, call safe GET endpoints, and compare workflow `class_type` values with `/object_info` when available.
+5. For workflow changes, modify the smallest set of node inputs. Do not invent custom node class names; fetch node definitions or ask for the workflow/custom node source.
+6. For agent-safe workflows, expose schema aliases such as `prompt`, `seed`, `width`, and `image`; do not make users reason about node IDs unless they ask.
+7. For troubleshooting, isolate first: core ComfyUI vs model path vs custom node vs dependency vs GPU/VRAM. Custom nodes are common culprits, so test with them disabled before blaming core.
+8. Verify the outcome with a real API call, workflow load, or deterministic local script when possible. If the user's runtime is unavailable, say exactly what remains unverified.
 
 ## Practical Defaults
 
 - Use API-format JSON for programmatic execution, not the regular saved UI workflow format.
 - Use `/object_info` as the source of truth for node classes, inputs, defaults, and allowed values.
 - Use `/models/{folder}` and the loader node dropdown behavior to verify model names instead of guessing path names.
+- Prefer official workflow templates or a known-good exported workflow before building raw graphs from scratch.
+- Preserve both mental models: API format runs, editor/GUI format is what the canvas opens and lays out.
 - Use WebSocket plus `/history/{prompt_id}` for production-ish local integrations; use plain `POST /prompt` only for fire-and-forget jobs.
 - Keep API keys out of logs and commits. Redact `X-API-Key`, Comfy account keys, cloud tokens, and notebook URLs.
 - Install Python dependencies into the Python environment that actually runs ComfyUI. Installing into system Python is the classic "looks busy, fixes nothing" move.
@@ -49,7 +54,7 @@ python3 scripts/comfy_probe.py --server http://127.0.0.1:8188
 python3 scripts/comfy_probe.py --server http://127.0.0.1:8188 --workflow /path/to/workflow_api.json
 ```
 
-Use its output to ground follow-up advice: endpoint reachability, server stats, available model folders, workflow shape issues, and missing node classes.
+Use its output to ground follow-up advice: endpoint reachability, server stats, available model folders, workflow shape issues, suggested schema parameters, model references, missing model files, and missing node classes.
 
 ## Sources To Prefer
 
@@ -58,3 +63,5 @@ Prefer official docs and source repos for current behavior:
 - ComfyUI docs: https://docs.comfy.org/
 - ComfyUI repo: https://github.com/Comfy-Org/ComfyUI
 - ComfyUI Manager repo: https://github.com/Comfy-Org/ComfyUI-Manager
+- ComfyUI-Agent-Kit: https://github.com/SlavaSexton/ComfyUI-Agent-Kit
+- ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw

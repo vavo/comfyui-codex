@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
-"""Read-only ComfyUI local server probe and API workflow sanity checker."""
+"""Read-only ComfyUI local server probe and workflow sanity checker."""
 
 from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 import urllib.error
 import urllib.parse
@@ -19,6 +20,40 @@ DEFAULT_MODEL_FOLDERS = (
     "vae",
     "controlnet",
     "upscale_models",
+    "clip",
+    "clip_vision",
+    "diffusion_models",
+    "style_models",
+)
+
+
+MODEL_LOADER_MAP: dict[str, dict[str, str]] = {
+    "CheckpointLoaderSimple": {"ckpt_name": "checkpoints"},
+    "CheckpointLoader": {"ckpt_name": "checkpoints"},
+    "unCLIPCheckpointLoader": {"ckpt_name": "checkpoints"},
+    "LoraLoader": {"lora_name": "loras"},
+    "LoraLoaderModelOnly": {"lora_name": "loras"},
+    "ControlNetLoader": {"control_net_name": "controlnet"},
+    "DiffControlNetLoader": {"control_net_name": "controlnet"},
+    "VAELoader": {"vae_name": "vae"},
+    "UpscaleModelLoader": {"model_name": "upscale_models"},
+    "CLIPLoader": {"clip_name": "clip"},
+    "DualCLIPLoader": {"clip_name1": "clip", "clip_name2": "clip"},
+    "UNETLoader": {"unet_name": "diffusion_models"},
+    "StyleModelLoader": {"style_model_name": "style_models"},
+    "CLIPVisionLoader": {"clip_name": "clip_vision"},
+    "GLIGENLoader": {"gligen_name": "gligen"},
+    "HypernetworkLoader": {"hypernetwork_name": "hypernetworks"},
+}
+
+OUTPUT_NODE_HINTS = (
+    "SaveImage",
+    "PreviewImage",
+    "SaveAnimatedWEBP",
+    "SaveAudio",
+    "SaveVideo",
+    "SaveImageWebsocket",
+    "VHS_VideoCombine",
 )
 
 
@@ -85,7 +120,14 @@ def load_workflow(path: Path) -> tuple[Any | None, list[str]]:
 
 
 def workflow_node_classes(workflow: Any) -> set[str]:
-    if not isinstance(workflow, dict):
+    fmt = detect_workflow_format(workflow)
+    if fmt == "editor":
+        classes: set[str] = set()
+        for node in workflow.get("nodes", []):
+            if isinstance(node, dict) and isinstance(node.get("type"), str):
+                classes.add(node["type"])
+        return classes
+    if not isinstance(workflow, dict) or fmt != "api":
         return set()
     classes: set[str] = set()
     for node in workflow.values():
@@ -94,15 +136,62 @@ def workflow_node_classes(workflow: Any) -> set[str]:
     return classes
 
 
+def detect_workflow_format(workflow: Any) -> str:
+    if not isinstance(workflow, dict) or not workflow:
+        return "unknown"
+    if isinstance(workflow.get("nodes"), list) and isinstance(workflow.get("links"), list):
+        return "editor"
+    if all(isinstance(key, str) and isinstance(value, dict) and "class_type" in value for key, value in workflow.items()):
+        return "api"
+    return "unknown"
+
+
+def iter_api_nodes(workflow: Any):
+    if detect_workflow_format(workflow) != "api":
+        return
+    for node_id, node in workflow.items():
+        if isinstance(node, dict):
+            yield str(node_id), node
+
+
 def inspect_workflow_shape(workflow: Any) -> dict[str, Any]:
     issues: list[str] = []
     warnings: list[str] = []
+    fmt = detect_workflow_format(workflow)
 
     if not isinstance(workflow, dict):
         return {
+            "format": "unknown",
             "node_count": 0,
             "class_types": [],
             "issues": ["workflow top-level JSON must be an object"],
+            "warnings": [],
+        }
+
+    if fmt == "editor":
+        node_types = sorted(
+            {
+                str(node.get("type"))
+                for node in workflow.get("nodes", [])
+                if isinstance(node, dict) and node.get("type")
+            }
+        )
+        return {
+            "format": "editor",
+            "node_count": len(workflow.get("nodes", [])),
+            "class_types": node_types,
+            "issues": [],
+            "warnings": [
+                "editor workflow format detected; export or convert to API format before POST /prompt"
+            ],
+        }
+
+    if fmt != "api":
+        return {
+            "format": "unknown",
+            "node_count": len(workflow),
+            "class_types": [],
+            "issues": ["workflow is neither ComfyUI API format nor editor format"],
             "warnings": [],
         }
 
@@ -141,11 +230,21 @@ def inspect_workflow_shape(workflow: Any) -> dict[str, Any]:
                     )
 
     return {
+        "format": "api",
         "node_count": len(workflow),
         "class_types": sorted(class_types),
+        "has_output_node": has_output_node(workflow),
         "issues": issues,
         "warnings": warnings,
     }
+
+
+def has_output_node(workflow: Any) -> bool:
+    for _node_id, node in iter_api_nodes(workflow) or []:
+        class_type = str(node.get("class_type", ""))
+        if class_type in OUTPUT_NODE_HINTS or class_type.startswith(("Save", "Preview")):
+            return True
+    return False
 
 
 def is_link(value: Any) -> bool:
@@ -181,19 +280,154 @@ def compact_endpoint_result(result: dict[str, Any]) -> dict[str, Any]:
     return summary
 
 
-def model_folder_summary(base_url: str, folders: list[str], timeout: float) -> dict[str, Any]:
+def model_folder_summary(
+    base_url: str, folders: list[str], timeout: float
+) -> tuple[dict[str, Any], dict[str, set[str]]]:
     summary: dict[str, Any] = {}
+    names_by_folder: dict[str, set[str]] = {}
     for folder in folders:
         encoded = urllib.parse.quote(folder, safe="")
         result = get_json(base_url, f"/models/{encoded}", timeout)
         compact = compact_endpoint_result(result)
         payload = result.get("payload")
         if result.get("ok") and isinstance(payload, list):
+            names_by_folder[folder] = {str(item) for item in payload}
             compact["models"] = payload[:50]
             if len(payload) > 50:
                 compact["truncated"] = True
         summary[folder] = compact
-    return summary
+    return summary, names_by_folder
+
+
+def extract_model_refs(workflow: Any) -> list[dict[str, Any]]:
+    refs: list[dict[str, Any]] = []
+    for node_id, node in iter_api_nodes(workflow) or []:
+        class_type = str(node.get("class_type", ""))
+        inputs = node.get("inputs")
+        if not isinstance(inputs, dict):
+            continue
+        for field, folder in MODEL_LOADER_MAP.get(class_type, {}).items():
+            value = inputs.get(field)
+            if isinstance(value, str) and value:
+                refs.append(
+                    {
+                        "node_id": node_id,
+                        "class_type": class_type,
+                        "field": field,
+                        "folder": folder,
+                        "filename": value,
+                    }
+                )
+    return refs
+
+
+def classify_model_refs(
+    refs: list[dict[str, Any]], names_by_folder: dict[str, set[str]]
+) -> list[dict[str, Any]]:
+    checked: list[dict[str, Any]] = []
+    for ref in refs:
+        folder = str(ref["folder"])
+        filename = str(ref["filename"])
+        item = dict(ref)
+        if folder not in names_by_folder:
+            item["status"] = "unverified"
+        elif filename in names_by_folder[folder]:
+            item["status"] = "present"
+        else:
+            item["status"] = "missing"
+        checked.append(item)
+    return checked
+
+
+def suggest_parameters(workflow: Any) -> list[dict[str, Any]]:
+    params: list[dict[str, Any]] = []
+    seen_names: set[str] = set()
+    for node_id, node in iter_api_nodes(workflow) or []:
+        class_type = str(node.get("class_type", ""))
+        inputs = node.get("inputs")
+        if not isinstance(inputs, dict):
+            continue
+        for field, value in inputs.items():
+            if is_link(value):
+                continue
+            suggestion = parameter_suggestion(class_type, field, value)
+            if suggestion is None:
+                continue
+            name = unique_name(suggestion["name"], node_id, seen_names)
+            suggestion.update(
+                {
+                    "name": name,
+                    "node_id": node_id,
+                    "field": field,
+                    "class_type": class_type,
+                    "current_value": value,
+                }
+            )
+            params.append(suggestion)
+    return params
+
+
+def parameter_suggestion(class_type: str, field: str, value: Any) -> dict[str, Any] | None:
+    lower_class = class_type.lower()
+    if field in {"text", "prompt"} and ("text" in lower_class or "prompt" in lower_class or "cliptextencode" in lower_class):
+        return {
+            "name": "prompt",
+            "type": "string",
+            "required": True,
+            "description": "Text prompt exposed to the agent or user",
+        }
+    if field == "seed":
+        return {
+            "name": "seed",
+            "type": "int",
+            "required": False,
+            "description": "Random seed for reproducibility",
+        }
+    if field in {"steps", "cfg", "denoise", "width", "height", "batch_size", "size"}:
+        return {
+            "name": field,
+            "type": value_type(value),
+            "required": False,
+            "description": f"Workflow parameter: {field}",
+        }
+    if field in {"sampler_name", "scheduler", "filename_prefix"}:
+        return {
+            "name": field,
+            "type": "string",
+            "required": False,
+            "description": f"Workflow parameter: {field}",
+        }
+    if class_type == "LoadImage" and field == "image":
+        return {
+            "name": "image",
+            "type": "image",
+            "required": True,
+            "description": "Input image uploaded before execution",
+        }
+    return None
+
+
+def value_type(value: Any) -> str:
+    if isinstance(value, bool):
+        return "boolean"
+    if isinstance(value, int) and not isinstance(value, bool):
+        return "int"
+    if isinstance(value, float):
+        return "float"
+    return "string"
+
+
+def unique_name(base: str, node_id: str, seen: set[str]) -> str:
+    clean = re.sub(r"[^\w]+", "_", base.strip().lower()).strip("_") or "param"
+    name = clean
+    if name in seen:
+        name = f"{clean}_{node_id}"
+    counter = 2
+    while name in seen:
+        name = f"{clean}_{node_id}_{counter}"
+        counter += 1
+    seen.add(name)
+    return name
 
 
 def build_report(args: argparse.Namespace) -> dict[str, Any]:
@@ -217,7 +451,8 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         report["endpoints"][name] = compact_endpoint_result(result)
 
     folders = args.model_folder or list(DEFAULT_MODEL_FOLDERS)
-    report["model_folders"] = model_folder_summary(base_url, folders, args.timeout)
+    model_summary, names_by_folder = model_folder_summary(base_url, folders, args.timeout)
+    report["model_folders"] = model_summary
 
     if args.workflow:
         workflow_path = Path(args.workflow)
@@ -225,6 +460,9 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
         workflow_report = inspect_workflow_shape(workflow)
         workflow_report["path"] = str(workflow_path)
         workflow_report["load_issues"] = load_issues
+        workflow_report["suggested_parameters"] = suggest_parameters(workflow)
+        model_refs = extract_model_refs(workflow)
+        workflow_report["model_refs"] = classify_model_refs(model_refs, names_by_folder)
 
         object_info = raw_results.get("object_info", {}).get("payload")
         if isinstance(object_info, dict):
@@ -243,7 +481,7 @@ def build_report(args: argparse.Namespace) -> dict[str, Any]:
 
 def parse_args(argv: list[str]) -> argparse.Namespace:
     parser = argparse.ArgumentParser(
-        description="Probe a local ComfyUI server and optionally sanity-check an API-format workflow."
+        description="Probe a local ComfyUI server and optionally sanity-check a ComfyUI workflow."
     )
     parser.add_argument(
         "--server",
@@ -252,7 +490,7 @@ def parse_args(argv: list[str]) -> argparse.Namespace:
     )
     parser.add_argument(
         "--workflow",
-        help="Path to an API-format workflow JSON file to inspect.",
+        help="Path to an API-format or editor-format workflow JSON file to inspect.",
     )
     parser.add_argument(
         "--model-folder",

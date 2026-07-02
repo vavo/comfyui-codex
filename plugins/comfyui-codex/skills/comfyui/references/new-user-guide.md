@@ -7,6 +7,8 @@ Primary sources:
 - https://docs.comfy.org/development/core-concepts/models
 - https://docs.comfy.org/development/core-concepts/custom-nodes
 - https://docs.comfy.org/development/comfyui-server/comms_overview
+- https://github.com/SlavaSexton/ComfyUI-Agent-Kit
+- https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
 
 ## Plain-English Model
 
@@ -53,6 +55,7 @@ If a model was copied while ComfyUI was open, refresh/restart if it does not app
 
 ## Good Habits
 
+- Start from built-in workflow templates when learning a new model or task.
 - Save known-good workflows before experimenting.
 - Add one new custom node pack at a time.
 - Keep model files organized by type.
@@ -60,6 +63,7 @@ If a model was copied while ComfyUI was open, refresh/restart if it does not app
 - Prefer ComfyUI Manager for custom nodes when available.
 - Treat random custom nodes like code from the internet, because that is exactly what they are.
 - Keep API workflows under version control when building apps.
+- For agent use, wrap workflows with friendly parameters so the user can set `prompt` or `seed` instead of editing node 37's private little kingdom.
 
 ## How To Ask Codex For Help
 

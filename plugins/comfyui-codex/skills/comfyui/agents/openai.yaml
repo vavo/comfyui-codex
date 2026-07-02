@@ -1,4 +1,4 @@
 interface:
   display_name: "ComfyUI"
-  short_description: "Build, run, and debug ComfyUI workflows"
-  default_prompt: "Use $comfyui to debug my ComfyUI workflow or API integration."
+  short_description: "ComfyUI workflows, APIs, and agent skills"
+  default_prompt: "Use $comfyui to debug or package my ComfyUI workflow for agent use."

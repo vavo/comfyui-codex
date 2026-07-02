@@ -7,6 +7,8 @@ Primary sources:
 - https://docs.comfy.org/development/core-concepts/workflow
 - https://docs.comfy.org/development/comfyui-server/comms_routes
 - https://docs.comfy.org/development/core-concepts/models
+- https://github.com/SlavaSexton/ComfyUI-Agent-Kit
+- https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
 
 ## Format Choice
 
@@ -16,6 +18,8 @@ ComfyUI has two common JSON shapes:
 - API format: intended for API submission. It uses numeric-string node IDs, `class_type`, and `inputs`, without visual layout metadata.
 
 For code, automation, Cloud API, and local `POST /prompt`, use API format. In the ComfyUI frontend, export it with `File -> Export Workflow (API)`.
+
+Keep editor/GUI format in scope when the user wants to see or edit the graph in the canvas. API format runs; editor format carries positions, links, widgets, groups, and layout. If Codex builds a user-facing graph, produce or preserve the editor-format file too.
 
 ## API-Format Shape
 
@@ -44,11 +48,13 @@ Input values are either literals or links. Links are two-item arrays: `["source_
 ## Authoring Process
 
 1. Start from a known-good exported API workflow when possible.
-2. Fetch `/object_info` from the target server. That server knows the installed node classes and allowed inputs.
-3. Check model loader values against `/models/{folder}` or the frontend dropdown. File names must match what ComfyUI sees.
-4. Build the smallest graph that proves the goal, then add complexity one branch at a time.
-5. Keep node IDs stable when patching existing workflows so API clients and tests can target known nodes.
-6. Queue a dry run only after structural checks pass.
+2. Prefer official ComfyUI workflow templates for a model/task before inventing a graph.
+3. Fetch `/object_info` from the target server. That server knows the installed node classes and allowed inputs.
+4. Check model loader values against `/models/{folder}` or the frontend dropdown. File names must match what ComfyUI sees.
+5. Build the smallest graph that proves the goal, then add complexity one branch at a time.
+6. Keep node IDs stable when patching existing workflows so API clients and tests can target known nodes.
+7. For a visual workflow, lay nodes left-to-right by dependency stage and avoid overlaps; do not leave every node at `[0, 0]` and call it a graph.
+8. Queue a dry run only after structural checks pass.
 
 ## Patching Existing Workflows
 
@@ -73,6 +79,23 @@ Do not rewrite a whole workflow just to change one prompt or seed. That is how s
 - Every `class_type` exists in `/object_info`.
 - Every model filename exists in the relevant `/models/{folder}` response or is documented by the custom node.
 - The workflow uses API format, not frontend save format.
+- The final tensor is wired to an output node such as `SaveImage`, `PreviewImage`, video save/combine, audio save, or WebSocket image output.
+- If a GUI/editor workflow is delivered, node positions and groups are readable and non-overlapping.
+
+## Workflow-As-Skill Packaging
+
+Use this pattern when the user wants reusable agent commands rather than one-off workflow edits:
+
+1. Store a normalized workflow by server/workflow ID.
+2. Generate a schema that maps friendly parameter names to internal `node_id.field` targets.
+3. Expose only parameters users should control.
+4. Keep defaults for tuned sampler/model values unless the user asks to expose them.
+5. Before first run, check dependencies: missing node classes, import failures, and missing models.
+6. Execute with structured JSON args and record history/output paths.
+
+Good exposed aliases: `prompt`, `negative_prompt`, `seed`, `steps`, `width`, `height`, `batch_size`, `image`, `mask`, `filename_prefix`.
+
+Do not expose raw node IDs in normal user-facing prompts. Use them in diagnostics and implementation details.
 
 ## When Creating From Scratch
 

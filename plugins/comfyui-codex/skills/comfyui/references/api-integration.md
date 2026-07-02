@@ -10,6 +10,8 @@ Primary sources:
 - https://docs.comfy.org/development/comfyui-server/api-examples
 - https://docs.comfy.org/development/cloud/openapi
 - https://docs.comfy.org/development/comfyui-server/api-key-integration
+- https://github.com/SlavaSexton/ComfyUI-Agent-Kit
+- https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
 
 ## Choose The API
 
@@ -18,6 +20,8 @@ Use local ComfyUI Server API when the user controls the machine, models, custom 
 Use Comfy Cloud API when the user wants managed GPUs and subscription-backed hosted execution. Cloud uses `https://cloud.comfy.org`, `X-API-Key`, and WebSocket updates at `wss://cloud.comfy.org/ws?clientId={uuid}&token={api_key}`. Treat the Cloud OpenAPI spec as experimental unless the docs say otherwise.
 
 Both local and Cloud use API-format workflows. Do not submit regular UI save-format JSON unless the endpoint explicitly accepts it.
+
+Agent-Kit's useful bias is local-first execution: the agent should discover the user's actual ComfyUI server, hardware, model paths, and templates before picking a graph. OpenClaw's useful bias is workflow-as-skill execution: hide graph internals behind stable parameters, preflight dependencies, then submit/poll/present results.
 
 ## Local Server Routes
 
@@ -63,6 +67,16 @@ Typical local payload shape:
 
 The `/prompt` response should include a `prompt_id` and queue `number` when accepted. If validation fails, expect `error` and `node_errors`; read those before rewriting the workflow.
 
+For chat agents, prefer an interactive submit/status pattern over a hidden shell loop:
+
+1. Submit once and capture `prompt_id`.
+2. Poll status/history as separate tool calls.
+3. Tell the user when work is queued/running if it takes time.
+4. On success, fetch outputs using the filenames, subfolders, and types returned by history.
+5. On failure, map the error back to node ID, class, and input.
+
+For scripts or CI, a blocking wrapper is fine. Keep that wrapper thin: load API workflow JSON, apply explicit overrides like `6.text` or `3.seed`, `POST /prompt`, wait for `/history/{prompt_id}`, then download `/view` outputs.
+
 ## WebSocket Events
 
 Useful built-in message types include:
@@ -91,6 +105,16 @@ Cloud API authentication uses `X-API-Key`. Do not confuse that header with local
 - WebSocket connects but no useful events: mismatched `client_id`, wrong server URL, proxy stripping WebSocket upgrade, or code waiting for the wrong event type.
 - `/history/{prompt_id}` empty: prompt failed early, wrong prompt ID, or history was cleared.
 - `/view` 404: wrong filename/subfolder/type from history, output was not saved, or using `SaveImageWebsocket` instead of `SaveImage`.
+
+## Agent-Safe API Contract
+
+When turning a workflow into a callable skill or command, expose business parameters instead of graph internals:
+
+- `prompt`, `negative_prompt`, `seed`, `width`, `height`, `steps`, `cfg`, `image`, `mask`, `filename_prefix`.
+- Keep node IDs and raw input names in the implementation layer.
+- Validate args as JSON before submission.
+- Run a dependency preflight before first execution: installed node classes, missing custom nodes, and referenced model files.
+- For multiple ComfyUI servers, route by explicit server ID plus health/VRAM facts, not by vibes and optimism, the industry's cheapest fuel.
 
 ## Integration Checklist
 

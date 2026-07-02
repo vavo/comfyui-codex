@@ -8,6 +8,9 @@ Primary sources:
 - https://docs.comfy.org/development/core-concepts/custom-nodes
 - https://docs.comfy.org/development/core-concepts/models
 - https://docs.comfy.org/development/comfyui-server/comms_routes
+- https://docs.comfy.org/development/comfyui-server/startup-flags
+- https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
+- https://github.com/SlavaSexton/ComfyUI-Agent-Kit
 
 ## First Evidence To Ask For
 
@@ -79,6 +82,14 @@ Fix sequence:
 5. Restart ComfyUI and check the startup log for import errors.
 6. Replace deprecated nodes only after confirming the original node is not recoverable.
 
+Dependency-check pattern:
+
+- Extract every workflow `class_type`.
+- Compare against `/object_info`.
+- Separate truly missing nodes from installed-but-import-failed nodes when Manager diagnostics or logs are available.
+- For installable nodes, surface source repository/package if known.
+- For unknown/private nodes, ask for the original workflow source or custom node repository.
+
 ## Missing Models
 
 Check the exact loader node and expected folder. Typical folders live under `ComfyUI/models/`, such as `checkpoints`, `loras`, `vae`, `controlnet`, and `upscale_models`, but custom nodes can define their own expectations.
@@ -92,6 +103,16 @@ Fix sequence:
 5. Confirm the file appears in the loader dropdown or `GET /models/{folder}`.
 
 Do not assume a model is installed just because the file exists somewhere on disk. ComfyUI has to see it from the configured model path.
+
+Common loader-to-folder checks:
+
+- `CheckpointLoaderSimple.ckpt_name` -> `checkpoints`
+- `LoraLoader.lora_name` -> `loras`
+- `VAELoader.vae_name` -> `vae`
+- `ControlNetLoader.control_net_name` -> `controlnet`
+- `UpscaleModelLoader.model_name` -> `upscale_models`
+- `CLIPLoader.clip_name` and `DualCLIPLoader.clip_name*` -> `clip`
+- `UNETLoader.unet_name` -> `diffusion_models`
 
 ## Generation Fails
 
@@ -124,6 +145,17 @@ Acceleration flags such as `--use-pytorch-cross-attention`, `--use-flash-attenti
 - No output in `/history`: check prompt ID and whether execution failed.
 - `/view` fails: use the filename, subfolder, and type returned by history.
 - WebSocket hangs: verify WebSocket URL and `client_id`; test direct local connection before debugging app code.
+
+## Workflow Import Failures
+
+When importing workflows into an agent skill layer:
+
+- Detect API vs editor format first.
+- Convert editor format only with a reachable target ComfyUI server when conversion depends on `/object_info`.
+- Process bulk imports independently so one broken workflow does not poison the whole folder.
+- Auto-rename conflicts instead of overwriting silently.
+- Preserve import metadata: origin path, server ID, workflow ID, and conversion warnings.
+- Re-run dependency checks after import and before first execution.
 
 ## Reporting Upstream
 
