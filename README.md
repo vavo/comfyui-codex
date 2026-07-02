@@ -363,13 +363,13 @@ The script prints JSON either way. A nonzero exit is not automatically a disaste
 This repository already contains a repo-local marketplace:
 
 ```text
-/Users/vavo/Documents/ComfyUI-Codex-Skill/.agents/plugins/marketplace.json
+<repo-root>/.agents/plugins/marketplace.json
 ```
 
 If this marketplace is not configured in Codex yet, add the marketplace root:
 
 ```bash
-codex plugin marketplace add /Users/vavo/Documents/ComfyUI-Codex-Skill/.agents/plugins
+codex plugin marketplace add <repo-root>/.agents/plugins
 ```
 
 Then install the plugin from that marketplace:
@@ -381,8 +381,9 @@ codex plugin add comfyui-codex@personal
 If Codex reports a different marketplace name, read it from:
 
 ```bash
-python3 /Users/vavo/.codex/skills/.system/plugin-creator/scripts/read_marketplace_name.py \
-  --marketplace-path /Users/vavo/Documents/ComfyUI-Codex-Skill/.agents/plugins/marketplace.json
+PLUGIN_CREATOR_SKILL="${CODEX_HOME:-$HOME/.codex}/skills/.system/plugin-creator"
+python3 "$PLUGIN_CREATOR_SKILL/scripts/read_marketplace_name.py" \
+  --marketplace-path .agents/plugins/marketplace.json
 ```
 
 After installing or reinstalling a local plugin, start a new Codex thread before testing skill activation. Existing threads do not reliably pick up new plugin metadata and skill bodies.
@@ -467,9 +468,10 @@ Run these checks before handing off changes.
 ### Plugin Manifest Validation
 
 ```bash
+PLUGIN_CREATOR_SKILL="${CODEX_HOME:-$HOME/.codex}/skills/.system/plugin-creator"
 uv run --with pyyaml python \
-  /Users/vavo/.codex/skills/.system/plugin-creator/scripts/validate_plugin.py \
-  /Users/vavo/Documents/ComfyUI-Codex-Skill/plugins/comfyui-codex
+  "$PLUGIN_CREATOR_SKILL/scripts/validate_plugin.py" \
+  plugins/comfyui-codex
 ```
 
 Expected output includes:
@@ -481,9 +483,10 @@ Plugin validation passed
 ### Skill Validation
 
 ```bash
+SKILL_CREATOR_SKILL="${CODEX_HOME:-$HOME/.codex}/skills/.system/skill-creator"
 uv run --with pyyaml python \
-  /Users/vavo/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
-  /Users/vavo/Documents/ComfyUI-Codex-Skill/plugins/comfyui-codex/skills/comfyui
+  "$SKILL_CREATOR_SKILL/scripts/quick_validate.py" \
+  plugins/comfyui-codex/skills/comfyui
 ```
 
 Expected output:
@@ -529,7 +532,7 @@ git diff --check -- .agents plugins README.md
 
 ```bash
 rm -rf plugins/comfyui-codex/skills/comfyui/scripts/__pycache__
-find /Users/vavo/Documents/ComfyUI-Codex-Skill -name __pycache__ -o -name '*.pyc'
+find . -name __pycache__ -o -name '*.pyc'
 ```
 
 ## Update And Reinstall Flow
@@ -537,8 +540,9 @@ find /Users/vavo/Documents/ComfyUI-Codex-Skill -name __pycache__ -o -name '*.pyc
 For local plugin iteration, use the plugin-creator cachebuster script instead of manually inventing version suffixes:
 
 ```bash
-python3 /Users/vavo/.codex/skills/.system/plugin-creator/scripts/update_plugin_cachebuster.py \
-  /Users/vavo/Documents/ComfyUI-Codex-Skill/plugins/comfyui-codex
+PLUGIN_CREATOR_SKILL="${CODEX_HOME:-$HOME/.codex}/skills/.system/plugin-creator"
+python3 "$PLUGIN_CREATOR_SKILL/scripts/update_plugin_cachebuster.py" \
+  plugins/comfyui-codex
 ```
 
 Then reinstall:
