@@ -1,11 +1,52 @@
-# ComfyUI Codex Plugin
+# ComfyUI Codex (Codex's ComfyUI Operator)
+
+[![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-vavo-5F7FFF?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/vavo) [![Sponsor on GitHub](https://img.shields.io/badge/Sponsor%20on-GitHub-24292F?style=for-the-badge&logo=github)](https://github.com/sponsors/vavo) [![Support on Patreon](https://img.shields.io/badge/Support%20on-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/vavo)
+
+> Turn Codex into a ComfyUI operator: install and repair ComfyUI, manage custom nodes, build API workflows, verify models, tune prompt inputs, and debug failures with runtime evidence instead of folklore.
 
 `comfyui-codex` is a local Codex plugin that teaches Codex how to work with ComfyUI in a practical way: installation, ComfyUI-Manager, custom nodes, API integration, workflow JSON, troubleshooting, beginner onboarding, and agent-safe workflow execution.
 
 The plugin is intentionally not a dumped encyclopedia. The trigger skill stays lean, then routes Codex into focused reference files when the task needs more detail. This keeps the context budget usable, which is a nice change from the usual "paste the entire internet and hope" strategy.
 
+Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui-codex)
+
+## Why ComfyUI Codex
+
+- **Installation help without install-method soup**: Desktop, Windows Portable, manual git/venv, Comfy CLI, hosted runtimes, and Comfy Cloud get treated as different setups because, annoyingly, they are.
+- **ComfyUI-Manager and custom nodes covered**: enablement, legacy mode, missing-node installs, dependency handling, snapshots, and import-failure triage.
+- **API workflows that can actually run**: local Server API, Comfy Cloud API, WebSocket monitoring, `/history`, `/view`, `/object_info`, and `/models` checks.
+- **Workflow repair before ritual reinstalling**: API/editor format detection, node-class validation, missing model checks, and targeted graph patching.
+- **Agent-safe execution patterns**: wraps workflows with friendly parameters like `prompt`, `seed`, `width`, and `image` instead of making users poke node IDs for sport.
+- **Evidence-first troubleshooting**: reads logs, runtime endpoints, workflow JSON, model folders, and custom-node state before guessing.
+
+## What's In The Box?
+
+- **One Codex skill**: `comfyui`, with concise routing and operational rules.
+- **Installation reference**: Comfy Desktop, Windows Portable, manual install, Comfy CLI, Manager, custom nodes, dependencies, and security checks.
+- **API integration reference**: local and Cloud APIs, submit/status/result loops, WebSocket events, and output retrieval.
+- **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, and a minimal text-to-image skeleton.
+- **Troubleshooting reference**: startup, frontend, missing node, missing model, VRAM, API, and import-failure paths.
+- **Beginner guide**: first-run checklist, core terms, workflow types, and good habits.
+- **Agent workflow patterns**: practical lessons adapted from ComfyUI-Agent-Kit and ComfyUI Skills OpenClaw.
+- **Read-only probe script**: checks server reachability, model folders, workflow structure, missing classes, and model references.
+
+**Quick Start:**
+
+```bash
+codex plugin marketplace add <repo-root>/.agents/plugins
+codex plugin add comfyui-codex@personal
+```
+
+Then start a new Codex thread and try:
+
+```text
+Use $comfyui to debug my ComfyUI workflow.
+```
+
 ## Contents
 
+- [Why ComfyUI Codex](#why-comfyui-codex)
+- [What's In The Box?](#whats-in-the-box)
 - [What This Plugin Covers](#what-this-plugin-covers)
 - [Repository Layout](#repository-layout)
 - [Knowledge Sources](#knowledge-sources)
@@ -19,6 +60,10 @@ The plugin is intentionally not a dumped encyclopedia. The trigger skill stays l
 - [Update And Reinstall Flow](#update-and-reinstall-flow)
 - [Operational Boundaries](#operational-boundaries)
 - [Troubleshooting This Plugin](#troubleshooting-this-plugin)
+- [Support](#support)
+- [Sponsor](#sponsor)
+- [License And Attribution](#license-and-attribution)
+- [Project Links](#project-links)
 
 ## What This Plugin Covers
 
@@ -659,10 +704,30 @@ The probe reporting offline is not a plugin failure. It usually means the target
 ## Maintenance Notes
 
 - Commit plugin changes when the change set exceeds 200 changed lines.
-- Push after commit when a remote is configured.
-- This repo currently has no configured push destination unless one is added later.
+- Push after commit to `origin/main` unless intentionally working elsewhere.
 - Keep generated files out of git unless they are intentional plugin assets.
 - Keep `README.md` at the repo root. Keep the skill folder focused on what Codex needs at runtime.
+
+## Support
+
+ComfyUI Codex is meant for real ComfyUI work: installs, broken custom nodes, workflow JSON, API runs, model-path confusion, and the usual "why is this node missing when I installed it" circus.
+
+If something is wrong, open an issue with:
+
+- ComfyUI install type.
+- OS, GPU, VRAM, and Python version.
+- Workflow JSON or exact prompt/task.
+- Startup log or API error payload.
+- Missing model or custom node names.
+- What changed before it broke.
+
+GitHub issues: https://github.com/vavo/comfyui-codex/issues
+
+## Sponsor
+
+[![Sponsor on GitHub](https://img.shields.io/badge/Sponsor%20on-GitHub-24292F?style=for-the-badge&logo=github)](https://github.com/sponsors/vavo) [![Buy Me a Coffee](https://img.shields.io/badge/Buy%20me%20a%20coffee-vavo-5F7FFF?style=for-the-badge&logo=buy-me-a-coffee&logoColor=white)](https://www.buymeacoffee.com/vavo) [![Support on Patreon](https://img.shields.io/badge/Support%20on-Patreon-FF424D?style=for-the-badge&logo=patreon&logoColor=white)](https://www.patreon.com/vavo)
+
+If this saves you from a three-hour custom-node dependency ritual, sponsorship is cheaper than the coffee you were about to need.
 
 ## License And Attribution
 
@@ -675,3 +740,13 @@ Knowledge references:
 - ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
 
 The plugin uses those repositories as design references for agent workflow behavior. It does not vendor their full packages.
+
+Made with too much coffee by [vavo](https://github.com/vavo).
+
+## Project Links
+
+- GitHub repo: https://github.com/vavo/comfyui-codex
+- Author: https://github.com/vavo
+- Sponsor: https://github.com/sponsors/vavo
+- Buy Me a Coffee: https://www.buymeacoffee.com/vavo
+- Patreon: https://www.patreon.com/vavo
