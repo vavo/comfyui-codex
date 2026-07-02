@@ -5,3 +5,4 @@ __pycache__/
 venv/
 .env
 .env.local
+docs/superpowers/plans/2026-07-03-comfyui-local-knowledge-pack.md

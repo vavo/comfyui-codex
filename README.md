@@ -27,7 +27,7 @@ Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui
 - **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, and a minimal text-to-image skeleton.
 - **Troubleshooting reference**: startup, frontend, missing node, missing model, VRAM, API, and import-failure paths.
 - **Beginner guide**: first-run checklist, core terms, workflow types, and good habits.
-- **Agent workflow patterns**: practical lessons adapted from ComfyUI-Agent-Kit and ComfyUI Skills OpenClaw.
+- **Agent workflow patterns**: local-first, template-first, workflow-as-skill patterns for agent automation.
 - **Read-only probe script**: checks server reachability, model folders, workflow structure, missing classes, and model references.
 
 **Quick Start:**
@@ -49,7 +49,7 @@ Use $comfyui to debug my ComfyUI workflow.
 - [What's In The Box?](#whats-in-the-box)
 - [What This Plugin Covers](#what-this-plugin-covers)
 - [Repository Layout](#repository-layout)
-- [Knowledge Sources](#knowledge-sources)
+- [Source Strategy](#source-strategy)
 - [How Codex Uses The Skill](#how-codex-uses-the-skill)
 - [Knowledge Areas](#knowledge-areas)
 - [Probe Script](#probe-script)
@@ -62,8 +62,8 @@ Use $comfyui to debug my ComfyUI workflow.
 - [Troubleshooting This Plugin](#troubleshooting-this-plugin)
 - [Support](#support)
 - [Sponsor](#sponsor)
-- [License And Attribution](#license-and-attribution)
 - [Project Links](#project-links)
+- [Resources Used / Kudos To](#resources-used--kudos-to)
 
 ## What This Plugin Covers
 
@@ -81,7 +81,7 @@ The plugin provides one Codex skill, `comfyui`, that should be used when a user 
 - Build or package workflows as agent-callable skills.
 - Work with local ComfyUI Server API or Comfy Cloud API.
 - Use evidence from `/system_stats`, `/object_info`, `/models`, `/history`, and related routes before guessing.
-- Apply agent workflow patterns from ComfyUI-Agent-Kit and ComfyUI Skills OpenClaw without copying those projects wholesale.
+- Apply reusable agent workflow patterns without making users edit raw node IDs for normal tasks.
 
 The main runtime assumption is simple: prefer current evidence from the user's actual ComfyUI instance over generic advice. If the server is reachable, inspect it. If it is not reachable, say what remains unverified.
 
@@ -147,11 +147,9 @@ Current version:
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
 
-## Knowledge Sources
+## Source Strategy
 
-The plugin uses three source lanes.
-
-### Official ComfyUI Docs
+The plugin uses official docs, live runtime evidence, and small local references. The boring order matters.
 
 Primary official source:
 
@@ -173,42 +171,7 @@ The skill references official docs for:
 
 Official docs remain the first source for API behavior because ComfyUI changes. Niche blog snippets age like milk. The docs and the live server are better.
 
-### ComfyUI-Agent-Kit
-
-Source:
-
-- https://github.com/SlavaSexton/ComfyUI-Agent-Kit
-
-Patterns reused:
-
-- Local-first bootstrap.
-- Discovering hardware, VRAM, model paths, installed models, and workflow folders before acting.
-- Template-first graph building.
-- Validating node classes and inputs against `/object_info`.
-- Keeping API workflow format separate from editor/GUI workflow format.
-- Agent-friendly model/task routing.
-- Small smoke tests before expensive full renders.
-- Clean graph layout expectations for canvas-visible workflows.
-
-This plugin does not vendor Agent-Kit's full model indexes, prompt recipe library, MCP driver, template library, or UI assets.
-
-### ComfyUI Skills OpenClaw
-
-Source:
-
-- https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
-
-Patterns reused:
-
-- Workflow-as-skill packaging.
-- Multi-server IDs such as `<server_id>/<workflow_id>`.
-- Schema aliases for agent-safe workflow execution.
-- Dependency preflight for missing nodes and models.
-- Submit/status/history loops for chat agents.
-- Avoiding raw node IDs in normal user-facing workflow commands.
-- Bulk import semantics and format detection.
-
-This plugin does not vendor OpenClaw's CLI, UI bundle, generated web app, or data storage model.
+The local references store stable operating knowledge so Codex does not need to browse for routine tasks. Live server endpoints still win for installed nodes, model names, GPU state, queue state, and workflow validation.
 
 ## How Codex Uses The Skill
 
@@ -355,8 +318,8 @@ plugins/comfyui-codex/skills/comfyui/references/agent-workflow-patterns.md
 Covers:
 
 - Source precedence.
-- Agent-Kit patterns.
-- OpenClaw patterns.
+- Local bootstrap patterns.
+- Workflow-as-skill patterns.
 - Codex operating loops for debugging, packaging, and building workflows.
 - Attribution notes.
 
@@ -521,7 +484,7 @@ When updating knowledge:
 
 1. Prefer official docs from `https://docs.comfy.org`.
 2. Use live ComfyUI endpoint behavior when available.
-3. Use Agent-Kit and OpenClaw for agent workflow patterns.
+3. Use existing agent-workflow prior art for reusable packaging patterns.
 4. Put detailed material in `references/`.
 5. Keep `SKILL.md` to routing and operational rules.
 6. Avoid adding giant copied docs or third-party generated assets.
@@ -729,17 +692,9 @@ GitHub issues: https://github.com/vavo/comfyui-codex/issues
 
 If this saves you from a three-hour custom-node dependency ritual, sponsorship is cheaper than the coffee you were about to need.
 
-## License And Attribution
+## License
 
 This local plugin manifest declares `MIT`.
-
-Knowledge references:
-
-- Official ComfyUI documentation: https://docs.comfy.org
-- ComfyUI-Agent-Kit: https://github.com/SlavaSexton/ComfyUI-Agent-Kit
-- ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
-
-The plugin uses those repositories as design references for agent workflow behavior. It does not vendor their full packages.
 
 Made with too much coffee by [vavo](https://github.com/vavo).
 
@@ -750,3 +705,11 @@ Made with too much coffee by [vavo](https://github.com/vavo).
 - Sponsor: https://github.com/sponsors/vavo
 - Buy Me a Coffee: https://www.buymeacoffee.com/vavo
 - Patreon: https://www.patreon.com/vavo
+
+## Resources Used / Kudos To
+
+- Official ComfyUI documentation: https://docs.comfy.org
+- ComfyUI-Agent-Kit: https://github.com/SlavaSexton/ComfyUI-Agent-Kit
+- ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
+
+Those projects were used as reference material. This plugin does not vendor or mirror their packages.
