@@ -1,7 +1,7 @@
 {
   "name": "comfyui-codex",
-  "version": "0.1.0+codex.20260702144228",
-  "description": "Codex guidance for ComfyUI APIs, workflows, troubleshooting, beginner onboarding, and agent-safe workflow execution.",
+  "version": "0.1.0+codex.20260702150656",
+  "description": "Codex guidance for ComfyUI installation, Manager, custom nodes, APIs, workflows, troubleshooting, and agent-safe execution.",
   "author": {
     "name": "vavo",
     "url": "https://github.com/vavo"
@@ -22,7 +22,7 @@
   "interface": {
     "displayName": "ComfyUI Codex",
     "shortDescription": "Build, run, and debug ComfyUI workflows.",
-    "longDescription": "ComfyUI Codex gives Codex a focused operating guide for local ComfyUI Server API work, Comfy Cloud API context, workflow JSON authoring, custom node and model troubleshooting, beginner onboarding, and agent-safe workflow execution patterns derived from the official ComfyUI docs, ComfyUI-Agent-Kit, and ComfyUI Skills OpenClaw.",
+    "longDescription": "ComfyUI Codex gives Codex a focused operating guide for ComfyUI installation paths, ComfyUI-Manager, custom nodes, local ComfyUI Server API work, Comfy Cloud API context, workflow JSON authoring, model troubleshooting, beginner onboarding, and agent-safe workflow execution patterns derived from the official ComfyUI docs, ComfyUI-Agent-Kit, and ComfyUI Skills OpenClaw.",
     "developerName": "vavo",
     "category": "Productivity",
     "capabilities": [

@@ -1,6 +1,6 @@
 # ComfyUI Codex Plugin
 
-`comfyui-codex` is a local Codex plugin that teaches Codex how to work with ComfyUI in a practical way: API integration, workflow JSON, troubleshooting, beginner onboarding, and agent-safe workflow execution.
+`comfyui-codex` is a local Codex plugin that teaches Codex how to work with ComfyUI in a practical way: installation, ComfyUI-Manager, custom nodes, API integration, workflow JSON, troubleshooting, beginner onboarding, and agent-safe workflow execution.
 
 The plugin is intentionally not a dumped encyclopedia. The trigger skill stays lean, then routes Codex into focused reference files when the task needs more detail. This keeps the context budget usable, which is a nice change from the usual "paste the entire internet and hope" strategy.
 
@@ -25,6 +25,9 @@ The plugin is intentionally not a dumped encyclopedia. The trigger skill stays l
 The plugin provides one Codex skill, `comfyui`, that should be used when a user asks Codex to:
 
 - Explain ComfyUI to a new user.
+- Choose between Comfy Desktop, Windows Portable, manual install, Comfy CLI, hosted, and cloud setup paths.
+- Enable and troubleshoot ComfyUI-Manager.
+- Install, update, disable, or diagnose custom nodes.
 - Debug local ComfyUI startup, runtime, model, or custom-node problems.
 - Diagnose ComfyUI API failures.
 - Inspect ComfyUI workflow JSON.
@@ -57,6 +60,7 @@ The main runtime assumption is simple: prefer current evidence from the user's a
                 ├── references/
                 │   ├── agent-workflow-patterns.md
                 │   ├── api-integration.md
+                │   ├── installation-manager-custom-nodes.md
                 │   ├── new-user-guide.md
                 │   ├── troubleshooting.md
                 │   └── workflow-authoring.md
@@ -93,7 +97,7 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 Current version:
 
 ```text
-0.1.0+codex.20260702144228
+0.1.0+codex.20260702150656
 ```
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
@@ -112,6 +116,8 @@ The skill references official docs for:
 
 - Local ComfyUI Server API.
 - Comfy Cloud API.
+- ComfyUI installation paths.
+- ComfyUI-Manager.
 - Workflow API format.
 - Core workflow concepts.
 - Models and model folders.
@@ -169,7 +175,7 @@ plugins/comfyui-codex/skills/comfyui/SKILL.md
 
 Codex loads `SKILL.md` when the user asks about ComfyUI. That file tells Codex to:
 
-1. Identify the lane: beginner onboarding, workflow authoring, API integration, troubleshooting, or agent workflow packaging.
+1. Identify the lane: beginner onboarding, installation/Manager/custom nodes, workflow authoring, API integration, troubleshooting, or agent workflow packaging.
 2. State assumptions.
 3. Prefer evidence from the user's runtime.
 4. Route into the smallest relevant reference file.
@@ -197,6 +203,30 @@ Covers:
 - How users should ask Codex for useful help.
 
 Use this when the user needs orientation, not raw API instructions.
+
+### Installation, Manager, And Custom Nodes
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/installation-manager-custom-nodes.md
+```
+
+Covers:
+
+- Choosing Comfy Desktop, Windows Portable, manual install, Comfy CLI, hosted, or cloud paths.
+- Install evidence to collect before giving commands.
+- Desktop instance behavior and shared paths.
+- Windows Portable embedded Python rules.
+- Manual git/venv install shape.
+- Comfy CLI install, node, and model commands.
+- ComfyUI-Manager enablement, legacy mode, and CLI context.
+- Custom node install methods: Manager, Git clone, ZIP fallback.
+- Correct-environment dependency installation.
+- Security and trust checks for third-party nodes.
+- Manager and custom-node troubleshooting loops.
+
+Use this when the user asks how to install ComfyUI, enable Manager, install missing workflow nodes, repair a node import failure, or decide which install path fits their machine.
 
 ### API Integration
 
