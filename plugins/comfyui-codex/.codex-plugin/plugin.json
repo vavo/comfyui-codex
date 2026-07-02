@@ -1,0 +1,32 @@
+{
+  "name": "comfyui-codex",
+  "version": "0.1.0",
+  "description": "Codex guidance for ComfyUI APIs, workflows, troubleshooting, and beginner onboarding.",
+  "author": {
+    "name": "Michal"
+  },
+  "license": "MIT",
+  "keywords": [
+    "comfyui",
+    "workflows",
+    "image-generation",
+    "api",
+    "troubleshooting"
+  ],
+  "skills": "./skills/",
+  "interface": {
+    "displayName": "ComfyUI Codex",
+    "shortDescription": "Build, run, and debug ComfyUI workflows.",
+    "longDescription": "ComfyUI Codex gives Codex a focused operating guide for local ComfyUI Server API work, Comfy Cloud API context, workflow JSON authoring, custom node and model troubleshooting, and concise onboarding for new users.",
+    "developerName": "Michal",
+    "category": "Productivity",
+    "capabilities": [
+      "Write"
+    ],
+    "defaultPrompt": [
+      "Use $comfyui to debug my ComfyUI workflow.",
+      "Use $comfyui to build an API-format workflow.",
+      "Use $comfyui to explain ComfyUI to a beginner."
+    ]
+  }
+}
