@@ -1,0 +1,25 @@
+{
+  "rules": [
+    {
+      "match": "exact",
+      "value": "IPAdapterModelLoader",
+      "package": "ComfyUI_IPAdapter_plus",
+      "confidence": "high",
+      "reason": "IP-Adapter loader class used by common IP-Adapter Plus workflows."
+    },
+    {
+      "match": "prefix",
+      "value": "VHS_",
+      "package": "ComfyUI-VideoHelperSuite",
+      "confidence": "high",
+      "reason": "VideoHelperSuite nodes commonly use the VHS_ class prefix."
+    },
+    {
+      "match": "contains",
+      "value": "Impact",
+      "package": "ComfyUI-Impact-Pack",
+      "confidence": "medium",
+      "reason": "Impact Pack workflows commonly expose node classes containing Impact."
+    }
+  ]
+}

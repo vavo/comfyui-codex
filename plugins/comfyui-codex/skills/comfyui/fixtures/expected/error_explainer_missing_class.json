@@ -1,0 +1,20 @@
+{
+  "categories": [
+    "missing_custom_node",
+    "validation_node_errors"
+  ],
+  "evidence": [
+    {
+      "class_type": "IPAdapterModelLoader",
+      "kind": "node_error",
+      "message": "Cannot execute because node class IPAdapterModelLoader does not exist.",
+      "node_id": "42"
+    }
+  ],
+  "next_checks": [
+    "Resolve missing class_type values with custom_node_resolver.py or ComfyUI-Manager's missing-node install flow.",
+    "Verify /object_info after restart; missing classes should appear there before the workflow can run.",
+    "Install or repair the custom node in the Python environment that actually runs ComfyUI."
+  ],
+  "severity": "blocking"
+}

@@ -1,0 +1,22 @@
+{
+  "workflows": [
+    {
+      "id": "txt2img-basic",
+      "type": "text-to-image",
+      "path": "../workflows/basic_api.json",
+      "description": "Minimal checkpoint, prompt, sampler, VAE decode, and save-image workflow."
+    },
+    {
+      "id": "lora-stack-basic",
+      "type": "lora-stacking",
+      "path": "lora_stack_api.json",
+      "description": "Two LoRA loaders chained before prompt encoding and sampling."
+    },
+    {
+      "id": "upscale-basic",
+      "type": "upscale",
+      "path": "upscale_api.json",
+      "description": "Load image, load upscale model, upscale, and save output."
+    }
+  ]
+}

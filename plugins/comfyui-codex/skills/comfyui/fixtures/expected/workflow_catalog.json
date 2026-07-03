@@ -1,0 +1,62 @@
+{
+  "by_type": {
+    "lora-stacking": 1,
+    "text-to-image": 1,
+    "upscale": 1
+  },
+  "invalid": 0,
+  "items": [
+    {
+      "class_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "format": "api",
+      "has_output_node": true,
+      "id": "txt2img-basic",
+      "issues": [],
+      "node_count": 7,
+      "type": "text-to-image",
+      "warnings": []
+    },
+    {
+      "class_types": [
+        "CLIPTextEncode",
+        "CheckpointLoaderSimple",
+        "EmptyLatentImage",
+        "KSampler",
+        "LoraLoader",
+        "SaveImage",
+        "VAEDecode"
+      ],
+      "format": "api",
+      "has_output_node": true,
+      "id": "lora-stack-basic",
+      "issues": [],
+      "node_count": 9,
+      "type": "lora-stacking",
+      "warnings": []
+    },
+    {
+      "class_types": [
+        "ImageUpscaleWithModel",
+        "LoadImage",
+        "SaveImage",
+        "UpscaleModelLoader"
+      ],
+      "format": "api",
+      "has_output_node": true,
+      "id": "upscale-basic",
+      "issues": [],
+      "node_count": 4,
+      "type": "upscale",
+      "warnings": []
+    }
+  ],
+  "total": 3,
+  "valid": 3
+}

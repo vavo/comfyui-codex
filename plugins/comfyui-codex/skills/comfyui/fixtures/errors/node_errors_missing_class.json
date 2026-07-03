@@ -1,0 +1,20 @@
+{
+  "error": {
+    "type": "prompt_outputs_failed_validation",
+    "message": "Prompt outputs failed validation"
+  },
+  "node_errors": {
+    "42": {
+      "class_type": "IPAdapterModelLoader",
+      "errors": [
+        {
+          "type": "invalid_prompt",
+          "message": "Cannot execute because node class IPAdapterModelLoader does not exist."
+        }
+      ],
+      "dependent_outputs": [
+        "9"
+      ]
+    }
+  }
+}

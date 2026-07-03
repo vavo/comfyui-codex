@@ -81,6 +81,40 @@ class ComfyToolTests(unittest.TestCase):
         self.assertEqual(code, 0)
         self.assertEqual(payload, expected("comfy_doctor_snapshot.json"))
 
+    def test_error_explainer_classifies_missing_custom_node(self) -> None:
+        code, payload = run_json(
+            "error_explainer.py",
+            str(FIXTURES / "errors" / "node_errors_missing_class.json"),
+            "--omit-path",
+        )
+
+        self.assertEqual(code, 1)
+        self.assertEqual(payload, expected("error_explainer_missing_class.json"))
+
+    def test_custom_node_resolver_maps_known_classes_and_flags_unknown(self) -> None:
+        code, payload = run_json(
+            "custom_node_resolver.py",
+            "IPAdapterModelLoader",
+            "MadeUpPrivateNode",
+            "--map-json",
+            str(FIXTURES / "custom_nodes" / "class_resolver.json"),
+            "--omit-path",
+        )
+
+        self.assertEqual(code, 1)
+        self.assertEqual(payload, expected("custom_node_resolver_mixed.json"))
+
+    def test_workflow_catalog_validates_golden_workflows(self) -> None:
+        code, payload = run_json(
+            "workflow_catalog.py",
+            "--catalog-json",
+            str(FIXTURES / "golden_workflows" / "catalog.json"),
+            "--omit-path",
+        )
+
+        self.assertEqual(code, 0)
+        self.assertEqual(payload, expected("workflow_catalog.json"))
+
 
 if __name__ == "__main__":
     unittest.main()

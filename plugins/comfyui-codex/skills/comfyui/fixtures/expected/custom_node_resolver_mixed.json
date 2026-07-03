@@ -1,0 +1,19 @@
+{
+  "next_checks": [
+    "Use ComfyUI-Manager's missing-node install flow when available, then restart ComfyUI.",
+    "If a class remains unresolved, inspect the workflow source or ask the workflow author for the required custom node pack.",
+    "After installation, verify the class appears in /object_info before running the workflow."
+  ],
+  "resolved": [
+    {
+      "class_type": "IPAdapterModelLoader",
+      "confidence": "high",
+      "match": "exact",
+      "package": "ComfyUI_IPAdapter_plus",
+      "reason": "IP-Adapter loader class used by common IP-Adapter Plus workflows."
+    }
+  ],
+  "unresolved": [
+    "MadeUpPrivateNode"
+  ]
+}

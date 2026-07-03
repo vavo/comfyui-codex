@@ -1,7 +1,7 @@
 {
   "name": "comfyui-codex",
-  "version": "0.1.0+codex.20260703021944",
-  "description": "Codex guidance and read-only tooling for ComfyUI installation, Manager, custom nodes, canvas use, tutorials, APIs, workflows, models, prompting, troubleshooting, and agent-safe execution.",
+  "version": "0.1.0+codex.20260703023454",
+  "description": "Codex guidance and read-only tooling for ComfyUI installation, Manager, custom nodes, MCP/App Mode, APIs, workflows, models, hosted GPUs, troubleshooting, and agent-safe execution.",
   "author": {
     "name": "vavo",
     "url": "https://github.com/vavo"
@@ -18,13 +18,16 @@
     "agents",
     "workflow-skills",
     "tutorials",
-    "comfyui-manager"
+    "comfyui-manager",
+    "mcp",
+    "app-mode",
+    "runpod"
   ],
   "skills": "./skills/",
   "interface": {
     "displayName": "ComfyUI Codex",
     "shortDescription": "Build, lint, audit, and debug ComfyUI workflows.",
-    "longDescription": "ComfyUI Codex gives Codex a focused operating guide and read-only tool suite for ComfyUI installation paths, ComfyUI-Manager, custom nodes, canvas/interface guidance, step-by-step workflow tutorials, generation parameters, local ComfyUI Server API work, Comfy Cloud API context, workflow JSON authoring, model routing, prompting, troubleshooting, beginner onboarding, offline fixture validation, and agent-safe workflow execution patterns.",
+    "longDescription": "ComfyUI Codex gives Codex a focused operating guide and read-only tool suite for ComfyUI installation paths, ComfyUI-Manager, custom nodes, MCP/App Mode and interface guidance, step-by-step workflow tutorials, generation parameters, local ComfyUI Server API work, Comfy Cloud API context, workflow JSON authoring, golden workflow fixtures, model-family routing, prompting, hosted GPU and Runpod-style triage, error explanation, custom-node resolution, troubleshooting, beginner onboarding, offline fixture validation, and agent-safe workflow execution patterns.",
     "developerName": "vavo",
     "category": "Productivity",
     "capabilities": [

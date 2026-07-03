@@ -25,10 +25,16 @@ Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui
 - **Local Knowledge Pack**: compact references for install paths, Manager/custom nodes, endpoints, canvas/interface, workflow tutorials, workflow JSON, recipes, models, prompting, parameters, and troubleshooting playbooks.
 - **API integration reference**: local and Cloud APIs, submit/status/result loops, WebSocket events, endpoint triage, and output retrieval.
 - **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, recipes, and agent-safe packaging.
+- **MCP/App/interface guide**: official MCP lanes, local API contract, App Mode builder flow, UI panels, and Mask Editor guidance.
+- **Golden workflow library**: local API-format workflow fixtures for text-to-image, LoRA stacking, and upscaling, with catalog validation.
+- **Error and custom-node resolvers**: classify ComfyUI error payloads and map known missing `class_type` values to likely node packs.
+- **Model-family decision guide**: route SD 1.5, SDXL, modern image/edit/video families, LoRA, ControlNet, and upscalers by task and runtime.
+- **Hosted GPU playbook**: Runpod/notebook-style API reachability, mounted storage, model persistence, custom-node, disk, and startup checks.
+- **Skill evaluation suite**: pressure prompts, acceptance criteria, and offline validation commands so the skill can be tested without a live GPU.
 - **Troubleshooting reference**: startup, frontend, missing node, missing model, VRAM, API, import-failure, and output-retrieval paths.
 - **Beginner guide**: first-run checklist, core terms, workflow types, and good habits.
 - **Agent workflow patterns**: local-first, template-first, workflow-as-skill patterns for agent automation.
-- **Read-only tool suite**: `comfy_probe.py`, `comfy_doctor.py`, `workflow_lint.py`, and `model_audit.py`.
+- **Read-only tool suite**: `comfy_probe.py`, `comfy_doctor.py`, `workflow_lint.py`, `model_audit.py`, `error_explainer.py`, `custom_node_resolver.py`, and `workflow_catalog.py`.
 - **Fixture/test suite**: sample workflows, server snapshots, expected JSON outputs, and offline unit tests.
 
 **Quick Start:**
@@ -104,7 +110,10 @@ The main runtime assumption is simple: prefer current evidence from the user's a
                 ├── agents/
                 │   └── openai.yaml
                 ├── fixtures/
+                │   ├── custom_nodes/
+                │   ├── errors/
                 │   ├── expected/
+                │   ├── golden_workflows/
                 │   ├── server/
                 │   └── workflows/
                 ├── references/
@@ -112,12 +121,18 @@ The main runtime assumption is simple: prefer current evidence from the user's a
                 │   ├── api-endpoints.md
                 │   ├── api-integration.md
                 │   ├── canvas-interface-guide.md
+                │   ├── error-explainer-and-node-resolver.md
                 │   ├── generation-parameters.md
+                │   ├── golden-workflow-library.md
+                │   ├── hosted-gpu-runpod-guide.md
                 │   ├── installation-manager-custom-nodes.md
                 │   ├── installation-paths.md
                 │   ├── manager-custom-nodes.md
+                │   ├── mcp-app-interface-guide.md
+                │   ├── model-family-decision-guide.md
                 │   ├── model-routing-and-prompting.md
                 │   ├── new-user-guide.md
+                │   ├── skill-evaluation-suite.md
                 │   ├── troubleshooting-playbooks.md
                 │   ├── troubleshooting.md
                 │   ├── workflow-authoring.md
@@ -127,7 +142,10 @@ The main runtime assumption is simple: prefer current evidence from the user's a
                 └── scripts/
                     ├── comfy_doctor.py
                     ├── comfy_probe.py
+                    ├── custom_node_resolver.py
+                    ├── error_explainer.py
                     ├── model_audit.py
+                    ├── workflow_catalog.py
                     └── workflow_lint.py
 └── tests/
     └── test_comfy_tools.py
@@ -162,7 +180,7 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 Current version:
 
 ```text
-0.1.0+codex.20260703021944
+0.1.0+codex.20260703023454
 ```
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
@@ -181,6 +199,8 @@ The skill references official docs for:
 - Comfy Cloud API.
 - ComfyUI installation paths.
 - ComfyUI-Manager.
+- Agent Tools / MCP.
+- App Mode and interface guidance.
 - Workflow API format.
 - Core workflow concepts.
 - Models and model folders.
@@ -307,6 +327,25 @@ Covers:
 
 Use this when the user is calling ComfyUI from code or asking why an API job failed.
 
+### MCP, App Mode, And Interface
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/mcp-app-interface-guide.md
+```
+
+Covers:
+
+- Official Comfy Agent Tools / MCP choices.
+- Local API interface contract for Codex.
+- App Mode input/output builder flow.
+- Interface panels, model library, queue, assets, and templates.
+- Mask Editor guidance for inpaint/outpaint work.
+- Boundary notes for a future MCP server.
+
+Use this when the user asks about MCP, App Mode, interface controls, local-vs-cloud agent operation, or making a workflow easier to run from chat.
+
 ### Canvas Interface
 
 Reference:
@@ -363,6 +402,24 @@ Covers:
 - Starter recipes for txt2img, img2img, inpaint, LoRA, ControlNet, upscale, and result retrieval.
 
 Use these when creating or linting workflow JSON.
+
+### Golden Workflow Library
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/golden-workflow-library.md
+```
+
+Covers:
+
+- Local API-format fixture catalog.
+- Golden workflow rules.
+- Current text-to-image, LoRA stacking, and upscale fixtures.
+- Missing fixture targets for img2img, inpaint, outpaint, ControlNet, and video.
+- Offline validation with `workflow_catalog.py`.
+
+Use this when Codex needs a known-good local baseline instead of browsing docs or inventing raw graphs.
 
 ### Workflow Tutorials
 
@@ -421,6 +478,62 @@ Covers:
 
 Use this when the user asks which model goes where, why a model is missing, or how to expose prompt controls.
 
+### Model Family Decision Guide
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/model-family-decision-guide.md
+```
+
+Covers:
+
+- Task-to-family routing for SD 1.5, SDXL, modern transformer/image-edit/video families, LoRA, ControlNet, and upscalers.
+- VRAM/runtime tradeoffs.
+- Loader-to-folder reminders.
+- Prompting differences by family.
+- When Codex should push back on unrealistic model/runtime choices.
+
+Use this when the user asks what model family, workflow shape, or prompting style fits a task.
+
+### Error Explainer And Custom Node Resolver
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/error-explainer-and-node-resolver.md
+```
+
+Covers:
+
+- `node_errors` and WebSocket error categories.
+- Missing custom node classes.
+- Missing model files.
+- Dependency import failures.
+- Resolver map policy.
+- Manager install and verification loop.
+
+Use this when the user provides an error payload, traceback, missing `class_type`, or custom-node import failure.
+
+### Hosted GPU And Runpod
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/hosted-gpu-runpod-guide.md
+```
+
+Covers:
+
+- Browser URL vs API URL checks.
+- Hosted proxy/tunnel problems.
+- Jupyter/terminal evidence.
+- Mounted volume and disk quota failures.
+- Model persistence after pod restart.
+- Custom-node install and dependency repair in hosted runtimes.
+
+Use this when ComfyUI is running in a pod, notebook, cloud VM, or browser-hosted GPU environment.
+
 ### Troubleshooting
 
 Reference:
@@ -461,6 +574,24 @@ Covers:
 - Attribution notes.
 
 Use this when the user wants Codex to turn workflows into reusable agent skills, not just run one prompt.
+
+### Skill Evaluation Suite
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/skill-evaluation-suite.md
+```
+
+Covers:
+
+- Offline validation commands.
+- Pressure prompts for missing nodes, missing models, App Mode, hosted GPUs, and model selection.
+- Expected routing behavior.
+- Acceptance criteria.
+- Regression checks.
+
+Use this when changing the plugin or checking whether the skill still answers quickly from local knowledge.
 
 ## Tools And Fixtures
 
@@ -522,6 +653,37 @@ python3 plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py \
   --omit-path
 ```
 
+### Error Explainer
+
+```bash
+python3 plugins/comfyui-codex/skills/comfyui/scripts/error_explainer.py \
+  plugins/comfyui-codex/skills/comfyui/fixtures/errors/node_errors_missing_class.json \
+  --omit-path
+```
+
+Classifies ComfyUI error payloads/log excerpts into buckets such as `missing_custom_node`, `missing_model`, `dependency_import_error`, `vram_oom`, `server_unreachable`, and `output_retrieval`.
+
+### Custom Node Resolver
+
+```bash
+python3 plugins/comfyui-codex/skills/comfyui/scripts/custom_node_resolver.py \
+  IPAdapterModelLoader \
+  --map-json plugins/comfyui-codex/skills/comfyui/fixtures/custom_nodes/class_resolver.json \
+  --omit-path
+```
+
+Maps known missing `class_type` values to likely custom node packs and leaves unknown classes unresolved instead of hallucinating a package name. Restraint. A rare and useful feature.
+
+### Workflow Catalog
+
+```bash
+python3 plugins/comfyui-codex/skills/comfyui/scripts/workflow_catalog.py \
+  --catalog-json plugins/comfyui-codex/skills/comfyui/fixtures/golden_workflows/catalog.json \
+  --omit-path
+```
+
+Validates the local golden workflow catalog and reports fixture counts by workflow type.
+
 ### Fixtures
 
 Fixtures live under:
@@ -536,6 +698,11 @@ They include:
 - `workflows/broken_link_api.json`
 - `workflows/editor_workflow.json`
 - `workflows/missing_model_api.json`
+- `errors/node_errors_missing_class.json`
+- `custom_nodes/class_resolver.json`
+- `golden_workflows/catalog.json`
+- `golden_workflows/lora_stack_api.json`
+- `golden_workflows/upscale_api.json`
 - `server/models.json`
 - `server/server_snapshot.json`
 - `expected/*.json`
@@ -546,7 +713,7 @@ Run offline verification:
 python3 -m unittest tests/test_comfy_tools.py
 ```
 
-Expected result: 4 tests pass.
+Expected result: 7 tests pass.
 
 ## Install In Codex
 
@@ -693,10 +860,7 @@ The `uv run --with pyyaml` wrapper is intentional in this local environment. The
 
 ```bash
 python3 -m py_compile \
-  plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py \
-  plugins/comfyui-codex/skills/comfyui/scripts/comfy_doctor.py \
-  plugins/comfyui-codex/skills/comfyui/scripts/workflow_lint.py \
-  plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py
+  plugins/comfyui-codex/skills/comfyui/scripts/*.py
 ```
 
 ```bash
@@ -704,6 +868,9 @@ python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py --help
 python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_doctor.py --help
 python3 plugins/comfyui-codex/skills/comfyui/scripts/workflow_lint.py --help
 python3 plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py --help
+python3 plugins/comfyui-codex/skills/comfyui/scripts/error_explainer.py --help
+python3 plugins/comfyui-codex/skills/comfyui/scripts/custom_node_resolver.py --help
+python3 plugins/comfyui-codex/skills/comfyui/scripts/workflow_catalog.py --help
 ```
 
 Offline fixture suite:

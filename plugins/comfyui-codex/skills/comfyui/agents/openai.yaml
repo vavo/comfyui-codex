@@ -1,4 +1,4 @@
 interface:
   display_name: "ComfyUI"
-  short_description: "ComfyUI install, workflow, API, model, and troubleshooting help"
+  short_description: "ComfyUI install, MCP/App Mode, workflow, API, model, and troubleshooting help"
   default_prompt: "Use $comfyui to inspect, lint, audit, or debug my ComfyUI workflow."
