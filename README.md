@@ -22,7 +22,7 @@ Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui
 ## What's In The Box?
 
 - **One Codex skill**: `comfyui`, with concise routing and operational rules.
-- **Local Knowledge Pack**: compact references for install paths, Manager/custom nodes, endpoints, workflow JSON, recipes, models, prompting, and troubleshooting playbooks.
+- **Local Knowledge Pack**: compact references for install paths, Manager/custom nodes, endpoints, canvas/interface, workflow tutorials, workflow JSON, recipes, models, prompting, parameters, and troubleshooting playbooks.
 - **API integration reference**: local and Cloud APIs, submit/status/result loops, WebSocket events, endpoint triage, and output retrieval.
 - **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, recipes, and agent-safe packaging.
 - **Troubleshooting reference**: startup, frontend, missing node, missing model, VRAM, API, import-failure, and output-retrieval paths.
@@ -108,13 +108,21 @@ The main runtime assumption is simple: prefer current evidence from the user's a
                 │   ├── server/
                 │   └── workflows/
                 ├── references/
+                │   ├── agent-workflow-patterns.md
                 │   ├── api-endpoints.md
                 │   ├── api-integration.md
+                │   ├── canvas-interface-guide.md
+                │   ├── generation-parameters.md
+                │   ├── installation-manager-custom-nodes.md
                 │   ├── installation-paths.md
                 │   ├── manager-custom-nodes.md
                 │   ├── model-routing-and-prompting.md
+                │   ├── new-user-guide.md
                 │   ├── troubleshooting-playbooks.md
+                │   ├── troubleshooting.md
+                │   ├── workflow-authoring.md
                 │   ├── workflow-json-format.md
+                │   ├── workflow-tutorials.md
                 │   └── workflow-recipes.md
                 └── scripts/
                     ├── comfy_doctor.py
@@ -154,7 +162,7 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 Current version:
 
 ```text
-0.1.0+codex.20260703020621
+0.1.0+codex.20260703021944
 ```
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
@@ -195,7 +203,7 @@ plugins/comfyui-codex/skills/comfyui/SKILL.md
 
 Codex loads `SKILL.md` when the user asks about ComfyUI. That file tells Codex to:
 
-1. Identify the lane: beginner onboarding, installation, Manager/custom nodes, model/prompt routing, workflow authoring, API integration, troubleshooting, or agent workflow packaging.
+1. Identify the lane: beginner onboarding, canvas/interface, workflow tutorial, generation parameters, installation, Manager/custom nodes, model/prompt routing, workflow authoring, API integration, troubleshooting, or agent workflow packaging.
 2. State assumptions.
 3. Prefer evidence from the user's runtime.
 4. Route into the smallest relevant reference file.
@@ -299,6 +307,44 @@ Covers:
 
 Use this when the user is calling ComfyUI from code or asking why an API job failed.
 
+### Canvas Interface
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/canvas-interface-guide.md
+```
+
+Covers:
+
+- Node anatomy.
+- Inputs, settings, outputs, and typed connections.
+- Canvas controls and node search.
+- Reading a workflow left to right.
+- GUI workflow format vs API workflow format.
+- Safe editing habits.
+
+Use this when the user is learning ComfyUI's interface, needs a workflow explained visually, or is editing the canvas manually.
+
+### Generation Parameters
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/generation-parameters.md
+```
+
+Covers:
+
+- Seed behavior.
+- Steps and diminishing returns.
+- CFG.
+- Sampler and scheduler comparisons.
+- Denoise for img2img/inpaint/outpaint/hi-res.
+- Width, height, batch, LoRA strength, and ControlNet strength.
+
+Use this when the user asks why settings affect output quality, reproducibility, or speed.
+
 ### Workflow JSON And Recipes
 
 References:
@@ -317,6 +363,28 @@ Covers:
 - Starter recipes for txt2img, img2img, inpaint, LoRA, ControlNet, upscale, and result retrieval.
 
 Use these when creating or linting workflow JSON.
+
+### Workflow Tutorials
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/workflow-tutorials.md
+```
+
+Covers:
+
+- Text to image.
+- Image to image.
+- Inpaint.
+- Outpaint.
+- Upscale.
+- LoRA single and LoRA stacking.
+- ControlNet.
+- Text to video and image to video tutorial patterns.
+- Required models/custom nodes, GUI steps, API/export steps, validation, and common failures.
+
+Use this when the user asks for a step-by-step how-to rather than a compact recipe.
 
 ### Workflow Authoring
 
@@ -807,5 +875,9 @@ Made with too much coffee by [vavo](https://github.com/vavo).
 - Official ComfyUI documentation: https://docs.comfy.org
 - ComfyUI-Agent-Kit: https://github.com/SlavaSexton/ComfyUI-Agent-Kit
 - ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
+- Stable Diffusion Art ComfyUI guide: https://stable-diffusion-art.com/comfyui/
+- Angry Shark Studio canvas tutorial: https://www.angry-shark-studio.com/blog/comfyui-tutorial-understanding-canvas/
+- Angry Shark Studio generation parameters tutorial: https://www.angry-shark-studio.com/blog/comfyui-tutorial-mastering-generation-parameters/
+- Angry Shark Studio beginner mistakes guide: https://www.angry-shark-studio.com/blog/comfyui-mistakes-beginners-make/
 
-Those projects were used as reference material. This plugin does not vendor or mirror their packages.
+Those resources were used as reference material. This plugin does not vendor or mirror their packages.

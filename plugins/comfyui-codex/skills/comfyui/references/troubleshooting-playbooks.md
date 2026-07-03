@@ -23,6 +23,7 @@ Ask for or collect:
 - Recent updates or installs.
 - Whether the default workflow works.
 - Whether custom nodes disabled changes the result.
+- Workflow save/version state if the issue followed manual canvas edits.
 
 ## Server Offline
 
@@ -111,6 +112,29 @@ Steps:
 
 Useful mapping lives in `model-routing-and-prompting.md`.
 
+## Bad Output Quality Or Weird Anatomy
+
+Symptoms:
+
+- Distorted bodies/faces.
+- Repeated subjects.
+- Washed-out or purple-ish colors.
+- Output ignores prompt or source image.
+- Results change too much while debugging.
+
+Steps:
+
+1. Fix seed before comparing changes.
+2. Check model family and target resolution.
+3. Check VAE requirements and wiring.
+4. Check prompt and negative prompt wiring to sampler conditioning.
+5. Check denoise for img2img/inpaint/outpaint.
+6. Check CFG and steps using `generation-parameters.md`.
+7. Check LoRA/ControlNet strength if adapters are active.
+8. Run the default/basic workflow to separate model/runtime problems from custom workflow problems.
+
+Do not add more prompt adjectives before checking resolution, VAE, seed, and denoise. That is just decorating the smoke alarm.
+
 ## Import Error Or Dependency Conflict
 
 Steps:
@@ -180,6 +204,18 @@ Steps:
 4. Import workflows one at a time.
 5. Record missing classes and models per workflow.
 6. Avoid overwriting existing workflows silently.
+
+## Lost Or Broken Canvas Work
+
+Steps:
+
+1. Ask whether the workflow was saved as JSON.
+2. Check whether auto-save/browser state still has the graph.
+3. If a generated image came from ComfyUI, try dragging it back into ComfyUI to recover embedded workflow metadata.
+4. If the user changed many nodes, ask for the last known-good workflow version.
+5. Rebuild from the smallest working tutorial pattern instead of trying to repair unknown canvas state from memory.
+
+Save useful workflows under descriptive versions after each major working change.
 
 ## Escalate Upstream
 

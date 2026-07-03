@@ -7,7 +7,7 @@ description: Build, run, inspect, install, and troubleshoot ComfyUI workflows an
 
 ## Operating Mode
 
-Start by naming the lane you are in: beginner onboarding, installation, Manager/custom nodes, model/prompt routing, workflow authoring, API integration, or troubleshooting. State assumptions explicitly before changing files or telling the user to run commands, especially around local vs cloud execution, server URL, ComfyUI install path, OS, GPU/VRAM, and whether Codex can run the user's ComfyUI instance.
+Start by naming the lane you are in: beginner onboarding, canvas/interface, workflow tutorial, generation parameters, installation, Manager/custom nodes, model/prompt routing, workflow authoring, API integration, or troubleshooting. State assumptions explicitly before changing files or telling the user to run commands, especially around local vs cloud execution, server URL, ComfyUI install path, OS, GPU/VRAM, and whether Codex can run the user's ComfyUI instance.
 
 Prefer evidence over folklore. Collect the workflow JSON, exact error text, ComfyUI logs, installed custom nodes, model paths, server URL, and hardware details before diagnosis. If the user wants a broad guide, turn it into a small actionable artifact instead of dumping a wiki into chat.
 
@@ -19,8 +19,11 @@ Read only what the task needs:
 - `references/manager-custom-nodes.md`: Manager enablement/config, missing custom nodes, dependency repair, isolation, snapshots, custom-node authoring basics, and security checks.
 - `references/api-endpoints.md`: compact local Server API route map, WebSocket messages, submit/status/result loop, Cloud API caveats, and endpoint failure mapping.
 - `references/api-integration.md`: integration strategy for local vs Cloud APIs, WebSocket monitoring, output retrieval, partner-node keys, and agent-safe API contracts.
+- `references/canvas-interface-guide.md`: ComfyUI canvas mental model, node anatomy, GUI controls, wiring, reading workflows, and GUI-to-API translation.
+- `references/generation-parameters.md`: seed, steps, CFG, sampler, scheduler, denoise, dimensions, batch, LoRA strength, ControlNet strength, and comparison workflow.
 - `references/workflow-json-format.md`: API vs editor workflow JSON, node/link shape, validation checklist, and patching rules.
 - `references/workflow-recipes.md`: starter patterns for txt2img, img2img, inpaint, LoRA, ControlNet, upscale, and result retrieval.
+- `references/workflow-tutorials.md`: step-by-step tutorial patterns for txt2img, img2img, inpaint, outpaint, upscale, LoRA, LoRA stacking, ControlNet, text-to-video, and image-to-video.
 - `references/workflow-authoring.md`: creating, converting, validating, and packaging workflows as agent-callable skills.
 - `references/model-routing-and-prompting.md`: loader-to-folder map, model family routing, prompt inputs, LoRA/ControlNet guidance, and extra model paths.
 - `references/troubleshooting-playbooks.md`: step-by-step playbooks for server offline, API failures, node errors, missing classes/models, imports, VRAM, output retrieval, and workflow import failures.

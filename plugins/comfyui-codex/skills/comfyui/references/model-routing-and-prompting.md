@@ -2,6 +2,8 @@
 
 Use this reference when selecting models, checking model folders, tuning prompt inputs, or mapping loader nodes to files.
 
+For seed, steps, CFG, sampler, scheduler, denoise, size, batch, and strength tuning, read `generation-parameters.md`.
+
 Primary sources:
 - https://docs.comfy.org/development/core-concepts/models
 - https://docs.comfy.org/development/comfyui-server/comms_routes
@@ -76,6 +78,18 @@ Use:
 - Upscalers after a valid base image exists.
 
 If the user asks for "best model", answer with tradeoffs and what must be installed. "Best" without hardware and task context is just astrology with file extensions.
+
+## Resolution And VAE Checks
+
+When outputs look distorted, washed out, off-color, or compositionally broken:
+
+- Confirm the workflow dimensions match the model family's normal range.
+- Confirm total pixel count is not wildly above what the model and VRAM can handle.
+- Check whether the checkpoint includes a baked-in VAE or expects an external VAE.
+- If an external VAE is required, verify the VAE file appears in `models/vae`.
+- Confirm the VAE output is actually wired to the decode node.
+
+Common pattern: users blame prompts when the issue is really wrong size, wrong VAE, or a missing model-family-specific component.
 
 ## Prompt Inputs
 
