@@ -1,0 +1,56 @@
+{
+  "endpoint_health": {
+    "failed": 0,
+    "ok": 5
+  },
+  "manager": {
+    "signals": [
+      "extensions"
+    ],
+    "status": "detected"
+  },
+  "mode": "snapshot",
+  "model_folders": {
+    "checkpoints": {
+      "count": 1
+    },
+    "clip": {
+      "count": 0
+    },
+    "clip_vision": {
+      "count": 0
+    },
+    "controlnet": {
+      "count": 0
+    },
+    "diffusion_models": {
+      "count": 0
+    },
+    "loras": {
+      "count": 1
+    },
+    "upscale_models": {
+      "count": 0
+    },
+    "vae": {
+      "count": 1
+    }
+  },
+  "server": "snapshot",
+  "system": {
+    "device_count": 1,
+    "python_version": "3.11.9"
+  },
+  "workflow": {
+    "format": "api",
+    "issues": [],
+    "missing_class_types": [],
+    "model_summary": {
+      "missing": 0,
+      "present": 1,
+      "total_refs": 1,
+      "unverified": 0
+    },
+    "node_count": 7
+  }
+}

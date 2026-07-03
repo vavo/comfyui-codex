@@ -2,6 +2,8 @@
 
 Use this reference when the task involves calling ComfyUI from code, checking endpoint behavior, monitoring generation, retrieving outputs, or choosing between local Server API and Comfy Cloud API.
 
+For a compact route table, read `api-endpoints.md` first. Use this file for integration strategy and operational loops.
+
 Primary sources:
 - https://docs.comfy.org/development/api-development/overview
 - https://docs.comfy.org/development/comfyui-server/comms_overview

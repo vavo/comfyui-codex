@@ -1,0 +1,13 @@
+{
+  "class_types": [
+    "SaveImage"
+  ],
+  "format": "api",
+  "has_output_node": true,
+  "issues": [
+    "node '1' input 'images' links to missing node '404'"
+  ],
+  "model_refs": [],
+  "node_count": 1,
+  "warnings": []
+}

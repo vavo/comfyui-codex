@@ -1,0 +1,26 @@
+{
+  "last_node_id": 1,
+  "last_link_id": 0,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "SaveImage",
+      "pos": [
+        100,
+        100
+      ],
+      "size": [
+        300,
+        200
+      ],
+      "widgets_values": [
+        "ComfyUI"
+      ]
+    }
+  ],
+  "links": [],
+  "groups": [],
+  "config": {},
+  "extra": {},
+  "version": 0.4
+}

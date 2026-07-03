@@ -1,0 +1,16 @@
+{
+  "checkpoints": [
+    "model.safetensors"
+  ],
+  "clip": [],
+  "clip_vision": [],
+  "controlnet": [],
+  "diffusion_models": [],
+  "loras": [
+    "style.safetensors"
+  ],
+  "upscale_models": [],
+  "vae": [
+    "vae.safetensors"
+  ]
+}

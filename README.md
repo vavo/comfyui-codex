@@ -22,13 +22,14 @@ Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui
 ## What's In The Box?
 
 - **One Codex skill**: `comfyui`, with concise routing and operational rules.
-- **Installation reference**: Comfy Desktop, Windows Portable, manual install, Comfy CLI, Manager, custom nodes, dependencies, and security checks.
-- **API integration reference**: local and Cloud APIs, submit/status/result loops, WebSocket events, and output retrieval.
-- **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, and a minimal text-to-image skeleton.
-- **Troubleshooting reference**: startup, frontend, missing node, missing model, VRAM, API, and import-failure paths.
+- **Local Knowledge Pack**: compact references for install paths, Manager/custom nodes, endpoints, workflow JSON, recipes, models, prompting, and troubleshooting playbooks.
+- **API integration reference**: local and Cloud APIs, submit/status/result loops, WebSocket events, endpoint triage, and output retrieval.
+- **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, recipes, and agent-safe packaging.
+- **Troubleshooting reference**: startup, frontend, missing node, missing model, VRAM, API, import-failure, and output-retrieval paths.
 - **Beginner guide**: first-run checklist, core terms, workflow types, and good habits.
 - **Agent workflow patterns**: local-first, template-first, workflow-as-skill patterns for agent automation.
-- **Read-only probe script**: checks server reachability, model folders, workflow structure, missing classes, and model references.
+- **Read-only tool suite**: `comfy_probe.py`, `comfy_doctor.py`, `workflow_lint.py`, and `model_audit.py`.
+- **Fixture/test suite**: sample workflows, server snapshots, expected JSON outputs, and offline unit tests.
 
 **Quick Start:**
 
@@ -52,7 +53,7 @@ Use $comfyui to debug my ComfyUI workflow.
 - [Source Strategy](#source-strategy)
 - [How Codex Uses The Skill](#how-codex-uses-the-skill)
 - [Knowledge Areas](#knowledge-areas)
-- [Probe Script](#probe-script)
+- [Tools And Fixtures](#tools-and-fixtures)
 - [Install In Codex](#install-in-codex)
 - [Use The Plugin](#use-the-plugin)
 - [Development Workflow](#development-workflow)
@@ -102,15 +103,26 @@ The main runtime assumption is simple: prefer current evidence from the user's a
                 ├── SKILL.md
                 ├── agents/
                 │   └── openai.yaml
+                ├── fixtures/
+                │   ├── expected/
+                │   ├── server/
+                │   └── workflows/
                 ├── references/
-                │   ├── agent-workflow-patterns.md
+                │   ├── api-endpoints.md
                 │   ├── api-integration.md
-                │   ├── installation-manager-custom-nodes.md
-                │   ├── new-user-guide.md
-                │   ├── troubleshooting.md
-                │   └── workflow-authoring.md
+                │   ├── installation-paths.md
+                │   ├── manager-custom-nodes.md
+                │   ├── model-routing-and-prompting.md
+                │   ├── troubleshooting-playbooks.md
+                │   ├── workflow-json-format.md
+                │   └── workflow-recipes.md
                 └── scripts/
-                    └── comfy_probe.py
+                    ├── comfy_doctor.py
+                    ├── comfy_probe.py
+                    ├── model_audit.py
+                    └── workflow_lint.py
+└── tests/
+    └── test_comfy_tools.py
 ```
 
 ### Marketplace
@@ -142,7 +154,7 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 Current version:
 
 ```text
-0.1.0+codex.20260702150656
+0.1.0+codex.20260703020621
 ```
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
@@ -183,11 +195,11 @@ plugins/comfyui-codex/skills/comfyui/SKILL.md
 
 Codex loads `SKILL.md` when the user asks about ComfyUI. That file tells Codex to:
 
-1. Identify the lane: beginner onboarding, installation/Manager/custom nodes, workflow authoring, API integration, troubleshooting, or agent workflow packaging.
+1. Identify the lane: beginner onboarding, installation, Manager/custom nodes, model/prompt routing, workflow authoring, API integration, troubleshooting, or agent workflow packaging.
 2. State assumptions.
 3. Prefer evidence from the user's runtime.
 4. Route into the smallest relevant reference file.
-5. Use `scripts/comfy_probe.py` when local server or workflow inspection would help.
+5. Use the read-only scripts when local server evidence, workflow linting, or model auditing would help.
 6. Verify with real API calls, workflow parsing, or deterministic local checks when possible.
 
 The skill does not tell Codex to always run ComfyUI. It tells Codex to inspect and verify when feasible, and to be explicit when it cannot.
@@ -212,29 +224,62 @@ Covers:
 
 Use this when the user needs orientation, not raw API instructions.
 
-### Installation, Manager, And Custom Nodes
+### Installation Paths
 
 Reference:
 
 ```text
-plugins/comfyui-codex/skills/comfyui/references/installation-manager-custom-nodes.md
+plugins/comfyui-codex/skills/comfyui/references/installation-paths.md
 ```
 
 Covers:
 
 - Choosing Comfy Desktop, Windows Portable, manual install, Comfy CLI, hosted, or cloud paths.
 - Install evidence to collect before giving commands.
-- Desktop instance behavior and shared paths.
-- Windows Portable embedded Python rules.
-- Manual git/venv install shape.
-- Comfy CLI install, node, and model commands.
-- ComfyUI-Manager enablement, legacy mode, and CLI context.
-- Custom node install methods: Manager, Git clone, ZIP fallback.
-- Correct-environment dependency installation.
-- Security and trust checks for third-party nodes.
-- Manager and custom-node troubleshooting loops.
+- Runtime-specific startup commands.
+- Stable startup flags.
+- Hosted/notebook/Runpod path caveats.
+- First-run verification.
 
-Use this when the user asks how to install ComfyUI, enable Manager, install missing workflow nodes, repair a node import failure, or decide which install path fits their machine.
+Use this when the user asks how to install ComfyUI, repair startup, or decide which setup fits their machine.
+
+### Manager And Custom Nodes
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/manager-custom-nodes.md
+```
+
+Covers:
+
+- Manager enablement.
+- Manager configuration.
+- Missing-node installs.
+- Custom-node dependency repair.
+- Isolation, snapshots, and rollback.
+- Custom node authoring basics.
+- Security checks for third-party Python code.
+
+Use this when the user asks about ComfyUI-Manager, custom nodes, import failures, or missing workflow node classes.
+
+### API Endpoints
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/api-endpoints.md
+```
+
+Covers:
+
+- Local Server API route map.
+- `POST /prompt`, `/history`, `/view`, `/queue`, `/object_info`, `/models`, `/ws`.
+- WebSocket message types.
+- Local vs Cloud API caveats.
+- Endpoint failure mapping.
+
+Use this when the user needs exact API routes or a quick integration sanity check.
 
 ### API Integration
 
@@ -247,18 +292,31 @@ plugins/comfyui-codex/skills/comfyui/references/api-integration.md
 Covers:
 
 - Choosing local Server API vs Comfy Cloud API.
-- Local server routes.
-- `POST /prompt`.
-- `GET /history/{prompt_id}`.
-- `GET /view`.
-- `GET /object_info`.
-- `GET /models/{folder}`.
-- WebSocket status and progress messages.
+- Submit/status/result loops.
 - Partner node and API key handling.
 - Agent-safe API contracts.
-- Submit/status/result loops for chat agents.
+- Chat-agent integration patterns.
 
 Use this when the user is calling ComfyUI from code or asking why an API job failed.
+
+### Workflow JSON And Recipes
+
+References:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/workflow-json-format.md
+plugins/comfyui-codex/skills/comfyui/references/workflow-recipes.md
+```
+
+Covers:
+
+- API workflow format vs editor/GUI save format.
+- Node object shape.
+- Literal inputs vs links.
+- Validation checklist.
+- Starter recipes for txt2img, img2img, inpaint, LoRA, ControlNet, upscale, and result retrieval.
+
+Use these when creating or linting workflow JSON.
 
 ### Workflow Authoring
 
@@ -270,40 +328,51 @@ plugins/comfyui-codex/skills/comfyui/references/workflow-authoring.md
 
 Covers:
 
-- API workflow format vs editor/GUI save format.
-- Node input shape.
-- Literal inputs vs links.
 - Targeted workflow patching.
-- Workflow validation.
 - Workflow-as-skill packaging.
 - Common exposed schema aliases.
-- Minimal text-to-image API workflow skeleton.
 - Review heuristics.
 
-Use this when creating, modifying, converting, or reviewing workflow JSON.
+Use this when modifying existing workflows or turning them into reusable agent-safe commands.
+
+### Models And Prompting
+
+Reference:
+
+```text
+plugins/comfyui-codex/skills/comfyui/references/model-routing-and-prompting.md
+```
+
+Covers:
+
+- Loader-to-folder mapping.
+- Model-family routing.
+- Exact filename checks with `/models/{folder}`.
+- Prompt and negative prompt conventions.
+- LoRA, ControlNet, upscale, and extra model path guidance.
+
+Use this when the user asks which model goes where, why a model is missing, or how to expose prompt controls.
 
 ### Troubleshooting
 
 Reference:
 
 ```text
-plugins/comfyui-codex/skills/comfyui/references/troubleshooting.md
+plugins/comfyui-codex/skills/comfyui/references/troubleshooting-playbooks.md
 ```
 
 Covers:
 
 - Evidence to collect first.
-- Startup and frontend failures.
-- Running with custom nodes disabled.
-- Custom node binary search.
-- Missing node diagnosis.
-- Missing model diagnosis.
-- Loader-to-folder mapping.
-- Generation failures.
-- VRAM and performance issues.
-- API-specific failures.
+- Server offline.
+- UI loads but API fails.
+- Validation `node_errors`.
+- Missing `class_type`.
+- Missing models.
+- Import errors and dependency conflicts.
+- VRAM and out-of-memory failures.
+- Output retrieval failures.
 - Workflow import failures.
-- Upstream bug reporting checklist.
 
 Use this when something is broken, slow, missing, or weird. So, most real ComfyUI work.
 
@@ -325,78 +394,91 @@ Covers:
 
 Use this when the user wants Codex to turn workflows into reusable agent skills, not just run one prompt.
 
-## Probe Script
+## Tools And Fixtures
 
-Script:
+All scripts are read-only. They do not queue prompts, install dependencies, modify workflows, clear history, or download models.
 
-```text
-plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py
-```
-
-The probe is read-only. It performs safe GET requests and local JSON inspection. It does not queue prompts, install dependencies, modify workflows, delete history, or download models.
-
-### Basic Server Probe
+### Server Probe
 
 ```bash
 python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py \
   --server http://127.0.0.1:8188
 ```
 
-It checks:
+Checks server reachability, `/system_stats`, `/object_info`, `/models`, `/queue`, common model folders, optional workflow shape, missing classes, suggested parameters, and model references.
 
-- `/system_stats`
-- `/object_info`
-- `/models`
-- `/queue`
-- Common model folders:
-  - `checkpoints`
-  - `loras`
-  - `vae`
-  - `controlnet`
-  - `upscale_models`
-  - `clip`
-  - `clip_vision`
-  - `diffusion_models`
-  - `style_models`
-
-### Workflow Probe
+### Doctor Script
 
 ```bash
-python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py \
+python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_doctor.py \
   --server http://127.0.0.1:8188 \
-  --workflow /absolute/path/to/workflow.json
+  --workflow <workflow-api.json>
 ```
 
-For workflows, it reports:
+Reports endpoint health, system stats, Manager/custom-node signals, model folder counts, missing workflow classes, and model-reference summary.
 
-- Detected workflow format: `api`, `editor`, or `unknown`.
-- Node count.
-- Used class types.
-- Missing class types when `/object_info` is reachable.
-- Structural issues such as broken links.
-- Whether an API workflow has an output node.
-- Suggested agent-facing parameters.
-- Referenced model files.
-- Model reference status: `present`, `missing`, or `unverified`.
-
-### Custom Model Folder Checks
+Offline snapshot mode:
 
 ```bash
-python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py \
-  --server http://127.0.0.1:8188 \
-  --model-folder checkpoints \
-  --model-folder diffusion_models
+python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_doctor.py \
+  --snapshot plugins/comfyui-codex/skills/comfyui/fixtures/server/server_snapshot.json \
+  --workflow plugins/comfyui-codex/skills/comfyui/fixtures/workflows/basic_api.json \
+  --omit-path
 ```
 
-Use this when a custom node expects a less common model folder.
+### Workflow Lint
 
-### Exit Codes
+```bash
+python3 plugins/comfyui-codex/skills/comfyui/scripts/workflow_lint.py \
+  plugins/comfyui-codex/skills/comfyui/fixtures/workflows/basic_api.json
+```
 
-- `0`: at least one endpoint responded and no workflow issue was detected.
-- `1`: endpoint failure or workflow issue detected.
-- `2`: invalid arguments, such as an empty server URL.
+Detects API/editor/unknown format, node count, class types, broken links, output-node presence, and model loader references without a live server.
 
-The script prints JSON either way. A nonzero exit is not automatically a disaster. It can be useful evidence.
+### Model Audit
+
+```bash
+python3 plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py \
+  plugins/comfyui-codex/skills/comfyui/fixtures/workflows/basic_api.json \
+  --server http://127.0.0.1:8188
+```
+
+Compares workflow model loader references against live `/models/{folder}` data.
+
+Offline fixture mode:
+
+```bash
+python3 plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py \
+  plugins/comfyui-codex/skills/comfyui/fixtures/workflows/missing_model_api.json \
+  --models-json plugins/comfyui-codex/skills/comfyui/fixtures/server/models.json \
+  --omit-path
+```
+
+### Fixtures
+
+Fixtures live under:
+
+```text
+plugins/comfyui-codex/skills/comfyui/fixtures/
+```
+
+They include:
+
+- `workflows/basic_api.json`
+- `workflows/broken_link_api.json`
+- `workflows/editor_workflow.json`
+- `workflows/missing_model_api.json`
+- `server/models.json`
+- `server/server_snapshot.json`
+- `expected/*.json`
+
+Run offline verification:
+
+```bash
+python3 -m unittest tests/test_comfy_tools.py
+```
+
+Expected result: 4 tests pass.
 
 ## Install In Codex
 
@@ -473,7 +555,9 @@ Keep edits scoped to:
 - `plugins/comfyui-codex/skills/comfyui/SKILL.md`
 - `plugins/comfyui-codex/skills/comfyui/agents/openai.yaml`
 - `plugins/comfyui-codex/skills/comfyui/references/*.md`
-- `plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py`
+- `plugins/comfyui-codex/skills/comfyui/scripts/*.py`
+- `plugins/comfyui-codex/skills/comfyui/fixtures/**`
+- `tests/test_comfy_tools.py`
 - `.agents/plugins/marketplace.json` only through scaffold or marketplace-aware tooling
 
 Do not put README-style auxiliary docs inside `plugins/comfyui-codex/skills/comfyui/`. Skill folders should stay lean and task-facing.
@@ -489,9 +573,9 @@ When updating knowledge:
 5. Keep `SKILL.md` to routing and operational rules.
 6. Avoid adding giant copied docs or third-party generated assets.
 
-### Update The Probe Script
+### Update The Tool Scripts
 
-Keep `comfy_probe.py`:
+Keep tool scripts:
 
 - Stdlib-only.
 - Read-only by default.
@@ -541,11 +625,23 @@ The `uv run --with pyyaml` wrapper is intentional in this local environment. The
 
 ```bash
 python3 -m py_compile \
-  plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py
+  plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py \
+  plugins/comfyui-codex/skills/comfyui/scripts/comfy_doctor.py \
+  plugins/comfyui-codex/skills/comfyui/scripts/workflow_lint.py \
+  plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py
 ```
 
 ```bash
 python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_probe.py --help
+python3 plugins/comfyui-codex/skills/comfyui/scripts/comfy_doctor.py --help
+python3 plugins/comfyui-codex/skills/comfyui/scripts/workflow_lint.py --help
+python3 plugins/comfyui-codex/skills/comfyui/scripts/model_audit.py --help
+```
+
+Offline fixture suite:
+
+```bash
+python3 -m unittest tests/test_comfy_tools.py
 ```
 
 Optional dead-port behavior check:
@@ -607,7 +703,7 @@ This plugin is a Codex knowledge and workflow-support package. It does not curre
 - A full ComfyUI client that queues generation jobs.
 - A prompt recipe database for every model family.
 
-Those are valid future additions, but they should be explicit features. For now, the plugin gives Codex reliable operating instructions and a read-only probe. That is the right boring foundation.
+Those are valid future additions, but they should be explicit features. For now, the plugin gives Codex reliable operating instructions, read-only diagnostics, offline linting, and fixture-backed checks. That is the right boring foundation.
 
 ## Troubleshooting This Plugin
 

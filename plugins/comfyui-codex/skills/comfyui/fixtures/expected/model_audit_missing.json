@@ -1,0 +1,32 @@
+{
+  "format": "api",
+  "issues": [],
+  "missing_refs": [
+    {
+      "class_type": "CheckpointLoaderSimple",
+      "field": "ckpt_name",
+      "filename": "missing.safetensors",
+      "folder": "checkpoints",
+      "node_id": "4",
+      "status": "missing"
+    }
+  ],
+  "model_refs": [
+    {
+      "class_type": "CheckpointLoaderSimple",
+      "field": "ckpt_name",
+      "filename": "missing.safetensors",
+      "folder": "checkpoints",
+      "node_id": "4",
+      "status": "missing"
+    }
+  ],
+  "present_refs": [],
+  "summary": {
+    "missing": 1,
+    "present": 0,
+    "total_refs": 1,
+    "unverified": 0
+  },
+  "unverified_refs": []
+}

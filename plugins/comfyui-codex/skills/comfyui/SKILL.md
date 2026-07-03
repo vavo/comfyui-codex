@@ -7,7 +7,7 @@ description: Build, run, inspect, install, and troubleshoot ComfyUI workflows an
 
 ## Operating Mode
 
-Start by naming the lane you are in: beginner onboarding, installation/Manager/custom nodes, workflow authoring, API integration, or troubleshooting. State assumptions explicitly before changing files or telling the user to run commands, especially around local vs cloud execution, server URL, ComfyUI install path, OS, GPU/VRAM, and whether Codex can run the user's ComfyUI instance.
+Start by naming the lane you are in: beginner onboarding, installation, Manager/custom nodes, model/prompt routing, workflow authoring, API integration, or troubleshooting. State assumptions explicitly before changing files or telling the user to run commands, especially around local vs cloud execution, server URL, ComfyUI install path, OS, GPU/VRAM, and whether Codex can run the user's ComfyUI instance.
 
 Prefer evidence over folklore. Collect the workflow JSON, exact error text, ComfyUI logs, installed custom nodes, model paths, server URL, and hardware details before diagnosis. If the user wants a broad guide, turn it into a small actionable artifact instead of dumping a wiki into chat.
 
@@ -15,19 +15,25 @@ Prefer evidence over folklore. Collect the workflow JSON, exact error text, Comf
 
 Read only what the task needs:
 
-- `references/api-integration.md`: local server API, Comfy Cloud API, WebSocket monitoring, image retrieval, endpoint triage.
-- `references/workflow-authoring.md`: creating, converting, validating, and patching API-format workflow JSON.
-- `references/installation-manager-custom-nodes.md`: Desktop, portable, manual, and CLI install paths; ComfyUI-Manager; custom node installs; dependency handling; install repair.
-- `references/troubleshooting.md`: startup failures, missing models, missing nodes, custom node conflicts, dependency problems, VRAM/performance issues.
+- `references/installation-paths.md`: install matrix for Desktop, Windows Portable, manual git/venv, Comfy CLI, hosted runtimes, Cloud, startup flags, and first-run checks.
+- `references/manager-custom-nodes.md`: Manager enablement/config, missing custom nodes, dependency repair, isolation, snapshots, custom-node authoring basics, and security checks.
+- `references/api-endpoints.md`: compact local Server API route map, WebSocket messages, submit/status/result loop, Cloud API caveats, and endpoint failure mapping.
+- `references/api-integration.md`: integration strategy for local vs Cloud APIs, WebSocket monitoring, output retrieval, partner-node keys, and agent-safe API contracts.
+- `references/workflow-json-format.md`: API vs editor workflow JSON, node/link shape, validation checklist, and patching rules.
+- `references/workflow-recipes.md`: starter patterns for txt2img, img2img, inpaint, LoRA, ControlNet, upscale, and result retrieval.
+- `references/workflow-authoring.md`: creating, converting, validating, and packaging workflows as agent-callable skills.
+- `references/model-routing-and-prompting.md`: loader-to-folder map, model family routing, prompt inputs, LoRA/ControlNet guidance, and extra model paths.
+- `references/troubleshooting-playbooks.md`: step-by-step playbooks for server offline, API failures, node errors, missing classes/models, imports, VRAM, output retrieval, and workflow import failures.
+- `references/troubleshooting.md`: broad troubleshooting overview and upstream reporting checklist.
 - `references/new-user-guide.md`: concise explanations and first-run guidance for users new to ComfyUI.
 - `references/agent-workflow-patterns.md`: repo-derived patterns from ComfyUI-Agent-Kit and ComfyUI_Skills_OpenClaw: local-first bootstrap, template-first graph building, schema aliases, dependency preflight, multi-server routing, and GUI/API format separation.
 
-Use `scripts/comfy_probe.py` when a local ComfyUI server is reachable or the user provides an API-format workflow file. The script is read-only unless ComfyUI itself logs routine GET requests.
+Use `scripts/comfy_probe.py`, `scripts/comfy_doctor.py`, `scripts/workflow_lint.py`, or `scripts/model_audit.py` when local server evidence, offline workflow validation, or model-reference checks would help. These scripts are read-only unless ComfyUI itself logs routine GET requests.
 
 ## Core Workflow
 
 1. Identify target runtime: local ComfyUI server, Comfy Desktop, portable Windows build, cloud notebook, Runpod/Jupyter, or Comfy Cloud.
-2. For install or Manager work, identify install type, OS, GPU, Python environment, startup command, and whether Manager is enabled before giving commands.
+2. For install work, identify install type, OS, GPU, Python environment, startup command, and whether Manager/custom nodes are involved before giving commands.
 3. Establish the API surface: local defaults to `http://127.0.0.1:8188`; Cloud uses `https://cloud.comfy.org` with `X-API-Key`.
 4. Bootstrap facts: collect `/system_stats`, `/object_info`, `/models`, configured workflow folders, available models, and whether the user expects local-first or Cloud behavior.
 5. Inspect before editing: detect API vs editor workflow JSON, call safe GET endpoints, and compare workflow `class_type` values with `/object_info` when available.
@@ -56,7 +62,15 @@ python3 scripts/comfy_probe.py --server http://127.0.0.1:8188
 python3 scripts/comfy_probe.py --server http://127.0.0.1:8188 --workflow /path/to/workflow_api.json
 ```
 
-Use its output to ground follow-up advice: endpoint reachability, server stats, available model folders, workflow shape issues, suggested schema parameters, model references, missing model files, and missing node classes.
+Use script output to ground follow-up advice: endpoint reachability, server stats, available model folders, workflow shape issues, suggested schema parameters, model references, missing model files, and missing node classes.
+
+Additional offline/live helpers:
+
+```bash
+python3 scripts/workflow_lint.py /path/to/workflow.json
+python3 scripts/model_audit.py /path/to/workflow_api.json --server http://127.0.0.1:8188
+python3 scripts/comfy_doctor.py --server http://127.0.0.1:8188 --workflow /path/to/workflow_api.json
+```
 
 ## Sources To Prefer
 

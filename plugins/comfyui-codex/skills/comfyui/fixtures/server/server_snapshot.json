@@ -1,0 +1,73 @@
+{
+  "server": "snapshot",
+  "endpoints": {
+    "extensions": {
+      "ok": true,
+      "payload": [
+        "ComfyUI-Manager"
+      ],
+      "status": 200
+    },
+    "models": {
+      "ok": true,
+      "payload": [
+        "checkpoints",
+        "loras",
+        "vae"
+      ],
+      "status": 200
+    },
+    "object_info": {
+      "ok": true,
+      "payload": {
+        "CLIPTextEncode": {},
+        "CheckpointLoaderSimple": {},
+        "EmptyLatentImage": {},
+        "KSampler": {},
+        "SaveImage": {},
+        "VAEDecode": {}
+      },
+      "status": 200
+    },
+    "queue": {
+      "ok": true,
+      "payload": {
+        "queue_pending": [],
+        "queue_running": []
+      },
+      "status": 200
+    },
+    "system_stats": {
+      "ok": true,
+      "payload": {
+        "devices": [
+          {
+            "name": "Mock GPU",
+            "type": "cuda",
+            "vram_total": 12000
+          }
+        ],
+        "system": {
+          "python_version": "3.11.9"
+        }
+      },
+      "status": 200
+    }
+  },
+  "model_folders": {
+    "checkpoints": [
+      "model.safetensors"
+    ],
+    "clip": [],
+    "clip_vision": [],
+    "controlnet": [],
+    "diffusion_models": [],
+    "loras": [
+      "style.safetensors"
+    ],
+    "upscale_models": [],
+    "vae": [
+      "vae.safetensors"
+    ]
+  }
+}

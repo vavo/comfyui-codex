@@ -1,0 +1,24 @@
+{
+  "class_types": [
+    "CLIPTextEncode",
+    "CheckpointLoaderSimple",
+    "EmptyLatentImage",
+    "KSampler",
+    "SaveImage",
+    "VAEDecode"
+  ],
+  "format": "api",
+  "has_output_node": true,
+  "issues": [],
+  "model_refs": [
+    {
+      "class_type": "CheckpointLoaderSimple",
+      "field": "ckpt_name",
+      "filename": "model.safetensors",
+      "folder": "checkpoints",
+      "node_id": "4"
+    }
+  ],
+  "node_count": 7,
+  "warnings": []
+}

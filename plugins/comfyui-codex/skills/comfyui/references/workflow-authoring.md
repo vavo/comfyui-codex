@@ -2,6 +2,8 @@
 
 Use this reference when creating, converting, validating, or patching ComfyUI workflow JSON.
 
+For raw API/editor format rules, read `workflow-json-format.md`. For starter graph patterns, read `workflow-recipes.md`. Use this file for authoring and packaging strategy.
+
 Primary sources:
 - https://docs.comfy.org/development/api-development/workflow-api-format
 - https://docs.comfy.org/development/core-concepts/workflow

@@ -1,0 +1,12 @@
+{
+  "1": {
+    "class_type": "SaveImage",
+    "inputs": {
+      "filename_prefix": "broken",
+      "images": [
+        "404",
+        0
+      ]
+    }
+  }
+}

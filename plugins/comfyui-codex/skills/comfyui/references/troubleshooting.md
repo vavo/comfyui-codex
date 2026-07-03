@@ -2,6 +2,8 @@
 
 Use this reference when the user reports startup failures, generation errors, missing models, missing nodes, custom node conflicts, dependency failures, API errors, slow generation, or out-of-memory behavior.
 
+For step-by-step diagnosis, read `troubleshooting-playbooks.md`. For model folder and prompt routing, read `model-routing-and-prompting.md`.
+
 Primary sources:
 - https://docs.comfy.org/troubleshooting/overview
 - https://docs.comfy.org/troubleshooting/custom-node-issues
