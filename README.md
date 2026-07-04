@@ -40,7 +40,7 @@ Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui
 **Quick Start:**
 
 ```bash
-codex plugin marketplace add <repo-root>/.agents/plugins
+codex plugin marketplace add <repo-root>
 codex plugin add comfyui-codex@personal
 ```
 
@@ -723,11 +723,19 @@ This repository already contains a repo-local marketplace:
 <repo-root>/.agents/plugins/marketplace.json
 ```
 
-If this marketplace is not configured in Codex yet, add the marketplace root:
+If this marketplace is not configured in Codex yet, add the repository root as the marketplace source:
 
 ```bash
-codex plugin marketplace add <repo-root>/.agents/plugins
+codex plugin marketplace add <repo-root>
 ```
+
+Codex expects the repository root here because it discovers the marketplace file at:
+
+```text
+<repo-root>/.agents/plugins/marketplace.json
+```
+
+Do not pass `<repo-root>/.agents/plugins` as the source; that directory contains the manifest, but it is not the supported marketplace root for the current Codex CLI.
 
 Then install the plugin from that marketplace:
 
