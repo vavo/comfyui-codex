@@ -44,6 +44,8 @@ codex plugin marketplace add <repo-root>
 codex plugin add comfyui-codex@personal
 ```
 
+For Platform ZIP upload, upload the repository ZIP. The root `.codex-plugin/plugin.json` points at the packaged skill under `plugins/comfyui-codex/skills/`.
+
 Then start a new Codex thread and try:
 
 ```text
@@ -61,6 +63,7 @@ Use $comfyui to debug my ComfyUI workflow.
 - [Knowledge Areas](#knowledge-areas)
 - [Tools And Fixtures](#tools-and-fixtures)
 - [Install In Codex](#install-in-codex)
+- [Upload To Platform](#upload-to-platform)
 - [Use The Plugin](#use-the-plugin)
 - [Development Workflow](#development-workflow)
 - [Validation](#validation)
@@ -97,6 +100,8 @@ The main runtime assumption is simple: prefer current evidence from the user's a
 ```text
 .
 ├── README.md
+├── .codex-plugin/
+│   └── plugin.json
 ├── .agents/
 │   └── plugins/
 │       └── marketplace.json
@@ -165,7 +170,12 @@ This is a repo-local marketplace, not the default personal marketplace at `~/.ag
 
 ### Plugin Manifest
 
-`plugins/comfyui-codex/.codex-plugin/plugin.json` is the plugin manifest. It declares:
+There are two plugin manifests on purpose:
+
+- `.codex-plugin/plugin.json`: root upload manifest for Platform ZIP uploads. It points `skills` at `./plugins/comfyui-codex/skills/`.
+- `plugins/comfyui-codex/.codex-plugin/plugin.json`: nested manifest used by the repo-local marketplace entry.
+
+Both declare:
 
 - Plugin metadata and version.
 - Author: `vavo` with profile URL `https://github.com/vavo`.
@@ -182,6 +192,8 @@ Current version:
 ```text
 0.1.0+codex.20260703023454
 ```
+
+Keep these manifest versions in sync. Yes, duplicate metadata is annoying. The alternative is upload failure, which is more annoying and less useful.
 
 The `+codex...` suffix is a cachebuster for local plugin iteration.
 
@@ -743,6 +755,18 @@ Then install the plugin from that marketplace:
 codex plugin add comfyui-codex@personal
 ```
 
+## Upload To Platform
+
+Use the repository ZIP from GitHub or create a ZIP where the repository root is the only top-level directory. The upload scanner accepts `.codex-plugin/plugin.json` at the ZIP root or inside that single top-level directory.
+
+This repo includes a root upload manifest:
+
+```text
+<repo-root>/.codex-plugin/plugin.json
+```
+
+Do not upload only `.agents/plugins/` or only the nested `plugins/comfyui-codex/` folder unless the upload UI explicitly asks for a plugin folder instead of a repository ZIP.
+
 If Codex reports a different marketplace name, read it from:
 
 ```bash
@@ -794,6 +818,7 @@ The best user requests include:
 
 Keep edits scoped to:
 
+- `.codex-plugin/plugin.json`
 - `plugins/comfyui-codex/.codex-plugin/plugin.json`
 - `plugins/comfyui-codex/skills/comfyui/SKILL.md`
 - `plugins/comfyui-codex/skills/comfyui/agents/openai.yaml`
@@ -901,8 +926,9 @@ Expected behavior: JSON output with connection-refused errors and exit code `1`.
 
 ```bash
 python3 -m json.tool plugins/comfyui-codex/.codex-plugin/plugin.json >/dev/null
+python3 -m json.tool .codex-plugin/plugin.json >/dev/null
 python3 -m json.tool .agents/plugins/marketplace.json >/dev/null
-git diff --check -- .agents plugins README.md
+git diff --check -- .agents .codex-plugin plugins README.md
 ```
 
 ### Clean Generated Python Cache
