@@ -18,6 +18,7 @@ Read only what the task needs:
 - `references/installation-paths.md`: install matrix for Desktop, Windows Portable, manual git/venv, Comfy CLI, hosted runtimes, Cloud, startup flags, and first-run checks.
 - `references/manager-custom-nodes.md`: Manager enablement/config, missing custom nodes, dependency repair, isolation, snapshots, custom-node authoring basics, and security checks.
 - `references/mcp-app-interface-guide.md`: Comfy Agent Tools/MCP choices, local API interface contract, App Mode builder guidance, UI panels, Mask Editor, and future MCP boundary rules.
+- `references/comfy-org-hub-guide.md`: Comfy.org Learning paths, MCP connection choices and boundaries, workflow-gallery discovery, and LTX-2.5/MiniMax H3 routing.
 - `references/api-endpoints.md`: compact local Server API route map, WebSocket messages, submit/status/result loop, Cloud API caveats, and endpoint failure mapping.
 - `references/api-integration.md`: integration strategy for local vs Cloud APIs, WebSocket monitoring, output retrieval, partner-node keys, and agent-safe API contracts.
 - `references/canvas-interface-guide.md`: ComfyUI canvas mental model, node anatomy, GUI controls, wiring, reading workflows, and GUI-to-API translation.
@@ -95,3 +96,6 @@ Prefer official docs and source repos for current behavior:
 - ComfyUI Manager repo: https://github.com/Comfy-Org/ComfyUI-Manager
 - ComfyUI-Agent-Kit: https://github.com/SlavaSexton/ComfyUI-Agent-Kit
 - ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
+- Comfy.org Learning: https://comfy.org/learning
+- Comfy.org MCP: https://comfy.org/mcp
+- Comfy.org Workflows: https://comfy.org/workflows/
