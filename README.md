@@ -53,10 +53,15 @@ Then start a new Codex thread and try:
 Use $comfyui to debug my ComfyUI workflow.
 ```
 
+## Changelog
+
+See [CHANGELOG.md](CHANGELOG.md) for current unreleased changes and validation notes.
+
 ## Contents
 
 - [Why ComfyUI Codex](#why-comfyui-codex)
 - [What's In The Box?](#whats-in-the-box)
+- [Changelog](#changelog)
 - [What This Plugin Covers](#what-this-plugin-covers)
 - [Repository Layout](#repository-layout)
 - [Source Strategy](#source-strategy)
@@ -81,6 +86,7 @@ Use $comfyui to debug my ComfyUI workflow.
 The plugin provides one Codex skill, `comfyui`, that should be used when a user asks Codex to:
 
 - Explain ComfyUI to a new user.
+- Choose between Comfy Agent, Comfy MCP, Comfy CLI, local Server API, and App Mode.
 - Choose between Comfy Desktop, Windows Portable, manual install, Comfy CLI, hosted, and cloud setup paths.
 - Enable and troubleshoot ComfyUI-Manager.
 - Install, update, disable, or diagnose custom nodes.
@@ -213,6 +219,7 @@ The skill references official docs for:
 - ComfyUI installation paths.
 - ComfyUI-Manager.
 - Agent Tools / MCP.
+- Comfy Agent and first-party agent boundaries.
 - App Mode and interface guidance.
 - Workflow API format.
 - Core workflow concepts.
