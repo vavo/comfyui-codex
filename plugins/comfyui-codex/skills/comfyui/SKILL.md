@@ -7,7 +7,7 @@ description: Build, run, inspect, install, and troubleshoot ComfyUI workflows an
 
 ## Operating Mode
 
-Start by naming the lane you are in: beginner onboarding, canvas/interface, MCP/App Mode, workflow tutorial, generation parameters, installation, hosted GPU, Manager/custom nodes, model/prompt routing, model-family selection, workflow authoring, golden workflow validation, API integration, error explanation, custom-node resolution, skill evaluation, or troubleshooting. State assumptions explicitly before changing files or telling the user to run commands, especially around local vs cloud execution, server URL, ComfyUI install path, OS, GPU/VRAM, and whether Codex can run the user's ComfyUI instance.
+Start by naming the lane you are in: beginner onboarding, canvas/interface, Comfy Agent, MCP/App Mode, workflow tutorial, generation parameters, installation, hosted GPU, Manager/custom nodes, model/prompt routing, model-family selection, workflow authoring, golden workflow validation, API integration, error explanation, custom-node resolution, skill evaluation, or troubleshooting. State assumptions explicitly before changing files or telling the user to run commands, especially around local vs cloud execution, server URL, ComfyUI install path, OS, GPU/VRAM, and whether Codex can run the user's ComfyUI instance.
 
 Prefer evidence over folklore. Collect the workflow JSON, exact error text, ComfyUI logs, installed custom nodes, model paths, server URL, and hardware details before diagnosis. If the user wants a broad guide, turn it into a small actionable artifact instead of dumping a wiki into chat.
 
@@ -17,8 +17,8 @@ Read only what the task needs:
 
 - `references/installation-paths.md`: install matrix for Desktop, Windows Portable, manual git/venv, Comfy CLI, hosted runtimes, Cloud, startup flags, and first-run checks.
 - `references/manager-custom-nodes.md`: Manager enablement/config, missing custom nodes, dependency repair, isolation, snapshots, custom-node authoring basics, and security checks.
-- `references/mcp-app-interface-guide.md`: Comfy Agent Tools/MCP choices, local API interface contract, App Mode builder guidance, UI panels, Mask Editor, and future MCP boundary rules.
-- `references/comfy-org-hub-guide.md`: Comfy.org Learning paths, MCP connection choices and boundaries, workflow-gallery discovery, and LTX-2.5/MiniMax H3 routing.
+- `references/mcp-app-interface-guide.md`: Comfy Agent, MCP choices, local API interface contract, App Mode builder guidance, UI panels, Mask Editor, and first-party boundary rules.
+- `references/comfy-org-hub-guide.md`: Comfy.org Learning paths, Comfy Agent/MCP connection choices and boundaries, workflow-gallery discovery, and LTX-2.5/MiniMax H3 routing.
 - `references/api-endpoints.md`: compact local Server API route map, WebSocket messages, submit/status/result loop, Cloud API caveats, and endpoint failure mapping.
 - `references/api-integration.md`: integration strategy for local vs Cloud APIs, WebSocket monitoring, output retrieval, partner-node keys, and agent-safe API contracts.
 - `references/canvas-interface-guide.md`: ComfyUI canvas mental model, node anatomy, GUI controls, wiring, reading workflows, and GUI-to-API translation.
@@ -42,9 +42,9 @@ Use `scripts/comfy_probe.py`, `scripts/comfy_doctor.py`, `scripts/workflow_lint.
 
 ## Core Workflow
 
-1. Identify target runtime: local ComfyUI server, Comfy Desktop, portable Windows build, cloud notebook, Runpod/Jupyter, or Comfy Cloud.
+1. Identify target runtime: local ComfyUI server, Comfy Desktop, portable Windows build, cloud notebook, Runpod/Jupyter, Comfy Cloud, or Comfy Agent on Cloud.
 2. For install work, identify install type, OS, GPU, Python environment, startup command, and whether Manager/custom nodes are involved before giving commands.
-3. Establish the API surface: local defaults to `http://127.0.0.1:8188`; Cloud uses `https://cloud.comfy.org` with `X-API-Key`.
+3. Establish the interface: local defaults to `http://127.0.0.1:8188`; Cloud API uses `https://cloud.comfy.org` with `X-API-Key`; Cloud MCP and Comfy Agent use their client/account authentication flows.
 4. Bootstrap facts: collect `/system_stats`, `/object_info`, `/models`, configured workflow folders, available models, and whether the user expects local-first or Cloud behavior.
 5. Inspect before editing: detect API vs editor workflow JSON, call safe GET endpoints, and compare workflow `class_type` values with `/object_info` when available.
 6. For workflow changes, modify the smallest set of node inputs. Do not invent custom node class names; fetch node definitions or ask for the workflow/custom node source.
@@ -62,6 +62,7 @@ Use `scripts/comfy_probe.py`, `scripts/comfy_doctor.py`, `scripts/workflow_lint.
 - Prefer the local golden workflow catalog for routine fixture-driven examples, then verify against live `/object_info` and `/models` when a server is available.
 - Preserve both mental models: API format runs, editor/GUI format is what the canvas opens and lays out.
 - Use WebSocket plus `/history/{prompt_id}` for production-ish local integrations; use plain `POST /prompt` only for fire-and-forget jobs.
+- Use Comfy Agent for canvas-aware building/editing/running when it is available; it is a first-party in-app assistant, not this plugin and not a replacement for the local Server API.
 - Keep API keys out of logs and commits. Redact `X-API-Key`, Comfy account keys, cloud tokens, and notebook URLs.
 - Install Python dependencies into the Python environment that actually runs ComfyUI. Installing into system Python is the classic "looks busy, fixes nothing" move.
 
@@ -98,4 +99,4 @@ Prefer official docs and source repos for current behavior:
 - ComfyUI Skills OpenClaw: https://github.com/HuangYuChuh/ComfyUI_Skills_OpenClaw
 - Comfy.org Learning: https://comfy.org/learning
 - Comfy.org MCP: https://comfy.org/mcp
-- Comfy.org Workflows: https://comfy.org/workflows/
+- Comfy.org Workflows: https://comfy.org/hub/workflows/

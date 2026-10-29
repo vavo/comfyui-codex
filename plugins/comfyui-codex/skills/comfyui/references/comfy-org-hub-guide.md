@@ -1,6 +1,6 @@
-# Comfy.org Learning, MCP, and Workflow Hub
+# Comfy.org Learning, Agent, MCP, and Workflow Hub
 
-Use this reference for Comfy.org learning paths, Comfy MCP choices, and current
+Use this reference for Comfy.org learning paths, Comfy Agent/MCP choices, and current
 workflow-gallery routing. The gallery and model catalog change frequently, so
 use the linked page for the current inventory and treat the workflow-specific
 details below as routing guidance, not a frozen guarantee.
@@ -8,13 +8,14 @@ details below as routing guidance, not a frozen guarantee.
 Primary sources:
 - Learning hub: https://comfy.org/learning
 - MCP product guide: https://comfy.org/mcp
-- Workflow gallery: https://comfy.org/workflows/
+- Workflow gallery: https://comfy.org/hub/workflows/
 - Comfy Agent Tools docs: https://docs.comfy.org/agent-tools
 - Comfy MCP docs: https://docs.comfy.org/agent-tools/mcp.md
 
 ## Contents
 
 - [Learning Hub](#learning-hub)
+- [Comfy Agent](#comfy-agent)
 - [MCP Choice](#mcp-choice)
 - [MCP Capabilities](#mcp-capabilities)
 - [Workflow Gallery](#workflow-gallery)
@@ -60,6 +61,20 @@ When teaching from the hub:
 3. Run one small test before changing multiple parameters.
 4. Save the working graph before adding custom nodes or extra model stages.
 5. Export API format before asking an agent or script to run the workflow.
+
+## Comfy Agent
+
+Comfy Agent is ComfyUI's built-in assistant for understanding, building,
+editing, and running a selected workflow while the user can see the canvas.
+The official agent-tools matrix currently describes it as generally available
+on Comfy Cloud, with Comfy Desktop support coming later.
+
+Route to Comfy Agent when the user wants canvas-aware help with the workflow
+already open in ComfyUI. It requires a Comfy account and currently works with
+Cloud models and Cloud-supported custom nodes. It is a different lane from
+Comfy MCP: MCP connects an external agent, while Comfy Agent is inside the
+ComfyUI product. For local files, private custom nodes, or reproducible scripts,
+use local MCP or the local Server API instead.
 
 ## MCP Choice
 
@@ -132,8 +147,9 @@ Gallery workflow checklist:
 6. Validate live with `/object_info` and `/models/{folder}`.
 7. Run a small test before committing to a long video or batch.
 
-The gallery page currently advertises more than 600 workflows, but that number
-is intentionally volatile. Do not quote a cached count as a capability claim.
+The gallery inventory is dynamic and can change as templates are added,
+removed, or reclassified. Do not cache or quote a workflow count as a stable
+capability claim.
 
 ## LTX-2.5 Workflows
 
@@ -190,7 +206,9 @@ generator that can synthesize video and native stereo audio in one pass.
 
 ### MiniMax H3 text to video
 
-Reference workflow: https://comfy.org/workflows/e8099b642c9f-e8099b642c9f/
+Reference: use the current MiniMax H3 text-to-video card from the [workflow
+gallery](https://comfy.org/hub/workflows/). The older direct route is volatile
+and has returned 404 during live checks.
 
 Use this when the user has no input files:
 
@@ -221,9 +239,14 @@ Use this when a still image should define the subject and overall style:
   `ImageScaleToTotalPixels` keep aspect ratio and model-friendly pixel budgets
   under control.
 - The generated MP4 can contain video plus model-generated audio.
-- The local model assets named by the template include
-  `minimax_h3_video_vae_fp16.safetensors` and
-  `minimax_h3_audio_vae_fp32.safetensors`.
+- The current template names these model assets:
+  `minimax_h3_fl2va_pruned_int8_convrot.safetensors` for `UNETLoader`,
+  `qwen3vl_32b_minimax_h3_nvfp4_awq.safetensors` for `CLIPLoader` with
+  `type: minimax`, `minimax_h3_video_vae_fp16.safetensors` for the video VAE,
+  and `minimax_h3_audio_vae_fp32.safetensors` for the audio VAE.
+- For a local run, verify these exact filenames through `/models` and the live
+  `/object_info` schema. The gallery's prepared Cloud workflow is not a promise
+  that every asset or node is available in a local install.
 
 ### MiniMax H3 reference to video
 
@@ -251,7 +274,8 @@ references are easier to diagnose than a full reference dump.
 Before a local run, verify:
 
 1. The required H3 generator/custom node class exists in `/object_info`.
-2. Video and audio VAE files exist in the expected model folders.
+2. The current H3 model stack exists in the expected folders: diffusion model,
+   CLIP/text encoder, video VAE, and audio VAE.
 3. The selected resolution and duration fit available VRAM and disk space.
 4. The user wants audio and has authorized any partner/cloud cost.
 5. `SaveVideo` or the equivalent output node is connected.
@@ -264,7 +288,7 @@ an open-weight local model merely because the node name looks similar.
 
 For a request mentioning one of these pages:
 
-1. Identify whether the user wants to learn, discover a template, connect MCP,
+1. Identify whether the user wants to learn, discover a template, use Comfy Agent, connect MCP,
    run locally, or run in the cloud.
 2. Route learning requests to the beginner sequence and the matching local
    tutorial reference.

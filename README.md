@@ -25,7 +25,8 @@ Project website: [github.com/vavo/comfyui-codex](https://github.com/vavo/comfyui
 - **Local Knowledge Pack**: compact references for install paths, Manager/custom nodes, endpoints, canvas/interface, workflow tutorials, workflow JSON, recipes, models, prompting, parameters, and troubleshooting playbooks.
 - **API integration reference**: local and Cloud APIs, submit/status/result loops, WebSocket events, endpoint triage, and output retrieval.
 - **Workflow authoring reference**: API JSON shape, patching rules, validation checklist, recipes, and agent-safe packaging.
-- **MCP/App/interface guide**: official MCP lanes, local API contract, App Mode builder flow, UI panels, and Mask Editor guidance.
+- **Comfy.org hub guide**: Learning paths, Comfy Agent/MCP selection, workflow-gallery routing, and LTX-2.5/MiniMax H3 preflight.
+- **Agent/MCP/App/interface guide**: Comfy Agent, official MCP lanes, local API contract, App Mode builder flow, UI panels, and Mask Editor guidance.
 - **Golden workflow library**: local API-format workflow fixtures for text-to-image, LoRA stacking, and upscaling, with catalog validation.
 - **Error and custom-node resolvers**: classify ComfyUI error payloads and map known missing `class_type` values to likely node packs.
 - **Model-family decision guide**: route SD 1.5, SDXL, modern image/edit/video families, LoRA, ControlNet, and upscalers by task and runtime.
@@ -349,14 +350,14 @@ plugins/comfyui-codex/skills/comfyui/references/mcp-app-interface-guide.md
 
 Covers:
 
-- Official Comfy Agent Tools / MCP choices.
+- Official Comfy Agent, MCP, and CLI choices.
 - Local API interface contract for Codex.
 - App Mode input/output builder flow.
 - Interface panels, model library, queue, assets, and templates.
 - Mask Editor guidance for inpaint/outpaint work.
-- Boundary notes for a future MCP server.
+- Boundary notes separating this plugin from first-party Comfy Agent and MCP services.
 
-Use this when the user asks about MCP, App Mode, interface controls, local-vs-cloud agent operation, or making a workflow easier to run from chat.
+Use this when the user asks about Comfy Agent, MCP, App Mode, interface controls, local-vs-cloud agent operation, or making a workflow easier to run from chat.
 
 ### Canvas Interface
 

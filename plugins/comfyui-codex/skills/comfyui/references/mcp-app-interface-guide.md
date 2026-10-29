@@ -1,10 +1,11 @@
-# MCP, App Mode, and Interface Guide
+# Comfy Agent, MCP, App Mode, and Interface Guide
 
-Use this when the user asks how Codex should operate ComfyUI through chat, MCP, Comfy Cloud, local API calls, or App Mode.
+Use this when the user asks how Codex should operate ComfyUI through Comfy Agent, MCP, Comfy Cloud, local API calls, or App Mode.
 
 ## Official Source Anchors
 
 - Agent Tools / MCP: https://docs.comfy.org/agent-tools
+- Comfy MCP product guide: https://comfy.org/mcp
 - Interface overview: https://docs.comfy.org/interface/overview
 - App Mode: https://docs.comfy.org/interface/app-mode
 - Mask Editor: https://docs.comfy.org/interface/maskeditor
@@ -19,12 +20,30 @@ Choose the operating mode before giving instructions:
 | --- | --- | --- |
 | "Generate from chat" with hosted GPUs | Comfy Cloud MCP | Point to Cloud MCP or Cloud API. Do not pretend this local plugin is a hosted GPU. |
 | "Drive my local ComfyUI" | Local Server API | Use `/system_stats`, `/object_info`, `/models`, `/prompt`, `/history`, `/view`, and `/ws`. |
+| "Edit the workflow I am looking at" | Comfy Agent | Use the built-in in-app assistant when available. It is canvas-aware and works on the selected workflow. |
 | "Make this workflow easy for non-technical users" | App Mode | Guide the user to select inputs, outputs, preview, and default view. |
 | "Teach me the UI" | Interface/canvas | Explain sidebar, node library, model library, queue, assets, templates, and canvas controls. |
 | "Inpaint this image" | Mask Editor + workflow | Use Mask Editor for mask creation, then inpaint workflow validation. |
 | "Package workflow for Codex" | Skill/workflow wrapper | Expose friendly schema fields and keep API-format workflow fixtures local. |
 
-The official docs describe first-party MCP options as Cloud MCP, Partner MCP, and Comfy CLI. Local ComfyUI can still be driven by agents through its running server API; first-party local MCP polish is separate from the existing API surface.
+The official agent-tools matrix now separates three first-party lanes: Comfy MCP, Comfy Agent, and Comfy CLI. Comfy Agent is generally available on Comfy Cloud and is coming to Comfy Desktop; it is not evidence that a local Desktop installation already has the feature. Local ComfyUI can still be driven by agents through its running Server API or local MCP.
+
+## Comfy Agent
+
+Comfy Agent is the built-in ComfyUI assistant for understanding, building,
+editing, and running a selected workflow while the user can see the canvas.
+The current official matrix describes it as:
+
+- Generally available on Comfy Cloud.
+- Cloud-model and Cloud-supported-node based today.
+- Requiring a Comfy account.
+- Coming to Comfy Desktop for local hardware and local models.
+
+Use it when the user wants canvas-aware workflow editing or wants to understand
+the graph currently open in ComfyUI. Do not route a local Desktop request to
+Comfy Agent unless the feature is confirmed available in that installation.
+For file-system access, private custom nodes, or deterministic automation,
+prefer local MCP or the local Server API.
 
 ## Local ComfyUI API Interface Contract
 
